@@ -28,6 +28,13 @@ dom('li').select(function(el){
 
   ... not even remotely done ...
 
+## Notes
+
+  It is recommended that you do _not_ depend on this library directly
+  when creating public components, unless you require most or all of
+  the functionality provided. Otherwise it is preferred that you use
+  the smaller more specific components.
+
 ## License 
 
   MIT
