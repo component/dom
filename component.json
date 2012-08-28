@@ -1,0 +1,12 @@
+{
+  "name": "dom",
+  "version": "0.0.1",
+  "description": "DOM traversal, manipulation and events aggregate library",
+  "keywords": ["html", "dom", "ui", "jquery"],
+  "scripts": ["index.js"],
+  "dependencies": {
+    "component/indexof": "*",
+    "component/domify": "*",
+    "component/classes": "*"
+  }
+}
