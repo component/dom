@@ -1960,6 +1960,7 @@ exports.Progress = require('./progress');
 exports.Landing = require('./landing');
 exports.JSONCov = require('./json-cov');
 exports.HTMLCov = require('./html-cov');
+exports.Markdown = require('./markdown');
 exports.JSONStream = require('./json-stream');
 exports.Teamcity = require('./teamcity');
 
@@ -2515,9 +2516,9 @@ function Markdown(runner) {
   });
 
   runner.on('end', function(){
-    process.stdout.write('# TOC\n');
-    process.stdout.write(generateTOC(runner.suite));
-    process.stdout.write(buf);
+    console.log('# TOC\n');
+    console.log(generateTOC(runner.suite));
+    console.log(buf);
   });
 }
 }); // module: reporters/markdown.js
