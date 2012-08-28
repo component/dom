@@ -4,8 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="mocha/mocha.css" />
     <script src="mocha/mocha.js"></script>
-    <script>console.log(mocha.reporters);</script>
-    <script>mocha.setup({ ui: 'bdd', reporter: mocha.reporters.Markdown })</script>
+    <script>mocha.setup({ ui: 'bdd', reporter: mocha.reporters.HTML })</script>
     <script>
       function assert(expr, msg) {
         if (!expr) throw new Error(msg || 'failed');
