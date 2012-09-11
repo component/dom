@@ -5,7 +5,6 @@
   "keywords": ["html", "dom", "ui", "jquery"],
   "scripts": ["index.js"],
   "dependencies": {
-    "component/is": "*",
     "component/indexof": "*",
     "component/domify": "*",
     "component/classes": "*"
