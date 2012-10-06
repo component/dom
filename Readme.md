@@ -29,7 +29,7 @@ dom('li').select(function(el){
 
 ## API
 
-  ... not even remotely done ...
+  ... not even remotely done, feel free to fork and help ...
 
 ## API
 
