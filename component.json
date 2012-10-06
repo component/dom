@@ -7,6 +7,7 @@
   "dependencies": {
     "component/type": "*",
     "component/event": "*",
+    "component/delegate": "*",
     "component/indexof": "*",
     "component/domify": "*",
     "component/classes": "*"

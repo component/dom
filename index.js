@@ -5,7 +5,10 @@
 
 var domify = require('domify')
   , classes = require('classes')
-  , indexof = require('indexof');
+  , indexof = require('indexof')
+  , delegate = require('delegate')
+  , events = require('event')
+  , type = require('type')
 
 /**
  * Expose `dom()`.
@@ -28,12 +31,12 @@ function dom(selector, context) {
 
   // html
   if ('<' == selector.charAt(0)) {
-    return new List([domify(selector)]);
+    return new List([domify(selector)], selector);
   }
 
   // selector
   if ('string' == typeof selector) {
-    return new List([ctx.querySelector(selector)]);
+    return new List(ctx.querySelectorAll(selector), selector);
   }
 }
 
@@ -44,14 +47,18 @@ function dom(selector, context) {
 exports.List = List;
 
 /**
- * Initialize a new `List` with the given array-ish of `els`.
+ * Initialize a new `List` with the
+ * given array-ish of `els` and `selector`
+ * string.
  *
  * @param {Mixed} els
+ * @param {String} selector
  * @api private
  */
 
-function List(els) {
+function List(els, selector) {
   this.els = els || [];
+  this.selector = selector;
 }
 
 /**
@@ -63,7 +70,7 @@ function List(els) {
  */
 
 List.prototype.at = function(i){
-  return new List([this.els[i]]);
+  return new List([this.els[i]], this.selector);
 };
 
 /**
@@ -75,7 +82,7 @@ List.prototype.at = function(i){
  */
 
 List.prototype.first = function(){
-  return new List([this.els[0]]);
+  return new List([this.els[0]], this.selector);
 };
 
 /**
@@ -87,7 +94,7 @@ List.prototype.first = function(){
  */
 
 List.prototype.last = function(){
-  return new List([this.els[this.els.length - 1]]);
+  return new List([this.els[this.els.length - 1]], this.selector);
 };
 
 /**
@@ -130,6 +137,67 @@ List.prototype.text = function(){
 };
 
 /**
+ * Bind to `event` and invoke `fn(e)`. When
+ * a `selector` is given then events are delegated.
+ *
+ * @param {String} event
+ * @param {String} [selector]
+ * @param {Function} fn
+ * @param {Boolean} capture
+ * @return {List}
+ * @api public
+ */
+
+List.prototype.on = function(event, selector, fn, capture){
+  if ('string' == typeof selector) {
+    for (var i = 0; i < this.els.length; ++i) {
+      fn._delegate = delegate.bind(this.els[i], selector, event, fn, capture);
+    }
+    return this;
+  }
+
+  capture = fn;
+  fn = selector;
+
+  for (var i = 0; i < this.els.length; ++i) {
+    events.bind(this.els[i], event, fn, capture);
+  }
+
+  return this;
+};
+
+/**
+ * Unbind to `event` and invoke `fn(e)`. When
+ * a `selector` is given then delegated event
+ * handlers are unbound.
+ *
+ * @param {String} event
+ * @param {String} [selector]
+ * @param {Function} fn
+ * @param {Boolean} capture
+ * @return {List}
+ * @api public
+ */
+
+List.prototype.off = function(event, selector, fn, capture){
+  if ('string' == typeof selector) {
+    for (var i = 0; i < this.els.length; ++i) {
+      // TODO: add selector support back
+      delegate.unbind(this.els[i], event, fn._delegate, capture);
+    }
+    return this;
+  }
+
+  capture = fn;
+  fn = selector;
+
+  for (var i = 0; i < this.els.length; ++i) {
+    events.unbind(this.els[i], event, fn, capture);
+  }
+  return this;
+};
+
+/**
  * Iterate elements and invoke `fn(list, i)`.
  *
  * @param {Function} fn
@@ -139,7 +207,7 @@ List.prototype.text = function(){
 
 List.prototype.each = function(fn){
   for (var i = 0; i < this.els.length; ++i) {
-    fn(new List([this.els[i]]), i);
+    fn(new List([this.els[i]], this.selector), i);
   }
   return this;
 };
@@ -170,7 +238,7 @@ List.prototype.forEach = function(fn){
 List.prototype.map = function(fn){
   var arr = [];
   for (var i = 0; i < this.els.length; ++i) {
-    arr.push(fn(new List([this.els[i]]), i));
+    arr.push(fn(new List([this.els[i]], this.selector), i));
   }
   return arr;
 };
@@ -187,10 +255,10 @@ List.prototype.map = function(fn){
 List.prototype.select =
 List.prototype.filter = function(fn){
   var el;
-  var list = new List;
+  var list = new List([], this.selector);
   for (var i = 0; i < this.els.length; ++i) {
     el = this.els[i];
-    if (fn(new List([el]), i)) list.els.push(el);
+    if (fn(new List([el], this.selector), i)) list.els.push(el);
   }
   return list;
 };
@@ -312,7 +380,7 @@ List.prototype.getStyle = function(prop){
 
 List.prototype.find = function(selector){
   // TODO: real implementation
-  var list = new List;
+  var list = new List([], this.selector);
   var el, els;
   for (var i = 0; i < this.els.length; ++i) {
     el = this.els[i];
