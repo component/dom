@@ -7,6 +7,9 @@
 
   - [domify](http://github.com/component/domify) to convert HTML to DOM nodes
   - [classes](http://github.com/component/classes) to add, remove, and toggle classes
+  - [delegate](http://github.com/component/delegate) for event delegation
+  - [event](http://github.com/component/event) for event binding
+  - [type](http://github.com/component/type) for type checking
 
 ## Installation
 
