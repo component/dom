@@ -53,7 +53,7 @@ dom('li').select(function(el){
    - [.css(prop, value)](#cssprop-value)
    - [.css(prop)](#cssprop)
 
-<a name="domid" />
+<a name="domid"></a>
 ### dom(id)
 should return an element by id.
 
@@ -64,7 +64,7 @@ assert(1 == list.length(), 'expected length of 1');
 assert('bar' == list.get(0).textContent);
 ```
 
-<a name="domhtml" />
+<a name="domhtml"></a>
 ### dom(html)
 should return a dom List of elements.
 
@@ -73,7 +73,7 @@ var list = dom('<em>Hello</em>');
 assert('Hello' == list.get(0).textContent);
 ```
 
-<a name="length" />
+<a name="length"></a>
 ### .length()
 should return the number of elements.
 
@@ -82,7 +82,7 @@ var list = dom('<em>Hello</em>');
 assert(1 == list.length());
 ```
 
-<a name="geti" />
+<a name="geti"></a>
 ### .get(i)
 should return the element at i.
 
@@ -91,7 +91,7 @@ var list = dom('<em>Hello</em>');
 assert('Hello' == list.get(0).textContent);
 ```
 
-<a name="ati" />
+<a name="ati"></a>
 ### .at(i)
 should return the element at i as a List.
 
@@ -100,7 +100,7 @@ var list = dom('<em>Hello</em>');
 assert('Hello' == list.at(0).get(0).textContent);
 ```
 
-<a name="first" />
+<a name="first"></a>
 ### .first()
 should return the first element in the List.
 
@@ -109,7 +109,7 @@ var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
 assert('foo' == list.first().text());
 ```
 
-<a name="last" />
+<a name="last"></a>
 ### .last()
 should return the last element in the List.
 
@@ -118,7 +118,7 @@ var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
 assert('bar' == list.last().text());
 ```
 
-<a name="addclassname" />
+<a name="addclassname"></a>
 ### .addClass(name)
 should add the given class name.
 
@@ -128,7 +128,7 @@ list.addClass('foo').addClass('bar');
 assert('foo bar' == list.get(0).className);
 ```
 
-<a name="removeclassname" />
+<a name="removeclassname"></a>
 ### .removeClass(name)
 should remove the given class name.
 
@@ -138,7 +138,7 @@ list.addClass('foo').addClass('bar').removeClass('foo');
 assert('bar' == list.get(0).className);
 ```
 
-<a name="toggleclassname" />
+<a name="toggleclassname"></a>
 ### .toggleClass(name)
 should toggle the given class name.
 
@@ -152,7 +152,7 @@ list.toggleClass('show');
 assert('' == list.get(0).className);
 ```
 
-<a name="hasclassname" />
+<a name="hasclassname"></a>
 ### .hasClass(name)
 should return true when the classname is present.
 
@@ -168,7 +168,7 @@ var list = dom('<em>Hello</em>').addClass('show');
 assert(false === list.hasClass('hide'));
 ```
 
-<a name="findselector" />
+<a name="findselector"></a>
 ### .find(selector)
 should return descendants matching the selector.
 
@@ -178,7 +178,7 @@ list = list.find('li');
 assert(2 == list.length());
 ```
 
-<a name="eachfn" />
+<a name="eachfn"></a>
 ### .each(fn)
 should iterate passing (list, i).
 
@@ -200,7 +200,7 @@ assert(list.get(0) == values[0].get(0));
 assert(list.get(1) == values[1].get(0));
 ```
 
-<a name="foreachfn" />
+<a name="foreachfn"></a>
 ### .forEach(fn)
 should iterate passing (el, i).
 
@@ -222,7 +222,7 @@ assert(list.get(0) == values[0]);
 assert(list.get(1) == values[1]);
 ```
 
-<a name="mapfn" />
+<a name="mapfn"></a>
 ### .map(fn)
 should map passing (list, i).
 
@@ -236,7 +236,7 @@ var ret = list.map(function(el, i){
 assert('foo|bar' == ret);
 ```
 
-<a name="selectfn" />
+<a name="selectfn"></a>
 ### .select(fn)
 should filter passing (list, i).
 
@@ -251,7 +251,7 @@ assert(1 == selected.length(), 'invalid length');
 assert(selected.get(0) == list.get(1));
 ```
 
-<a name="filterfn" />
+<a name="filterfn"></a>
 ### .filter(fn)
 should alias .select.
 
@@ -259,7 +259,7 @@ should alias .select.
 assert(dom.List.prototype.filter == dom.List.prototype.select);
 ```
 
-<a name="cssprop-value" />
+<a name="cssprop-value"></a>
 ### .css(prop, value)
 should set a style value.
 
@@ -269,7 +269,7 @@ list.css('display', 'none');
 assert('none' == list.get(0).style.display);
 ```
 
-<a name="cssprop" />
+<a name="cssprop"></a>
 ### .css(prop)
 should get a style value.
 
