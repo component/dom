@@ -234,8 +234,25 @@ describe('.filter(fn)', function(){
   })
 })
 
+describe('.attr()', function(){
+  describe('with a key and value', function(){
+    it('should set the attribute', function(){
+      var list = dom('<a></a>');
+      list.attr('href', '#');
+      assert('#' == list.get(0).getAttribute('href'));
+    })
+  })
+
+  describe('with a key', function(){
+    it('should return the attribute', function(){
+      var list = dom('<div id="logo"></div>');
+      assert('logo' == list.attr('id'));
+    })
+  })
+})
+
 describe('.css()', function(){
-  describe('with a prop and value', function(){
+  describe('with a key and value', function(){
     it('should set a style value', function(){
       var list = dom('<em>Hello</em>');
       list.css('display', 'none');
@@ -243,7 +260,7 @@ describe('.css()', function(){
     })
   })
 
-  describe('with a prop', function(){
+  describe('with a key', function(){
     it('should get a style value', function(){
       var list = dom('<em>Hello</em>');
       list.css('display', 'none');

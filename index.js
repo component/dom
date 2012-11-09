@@ -73,6 +73,24 @@ function List(els, selector) {
 }
 
 /**
+ * Set attribute `name` to `val`, or get attr `name`.
+ *
+ * @param {String} name
+ * @param {String} [val]
+ * @return {String|List} self
+ * @api public
+ */
+
+List.prototype.attr = function(name, val){
+  if (2 == arguments.length) {
+    this.els[0].setAttribute(name, val);
+    return this;
+  } else {
+    return this.els[0].getAttribute(name);
+  }
+};
+
+/**
  * Return a cloned `List` with all elements cloned.
  *
  * @return {List}
