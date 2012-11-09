@@ -11,10 +11,36 @@ var domify = require('domify')
   , type = require('type')
 
 /**
+ * Attributes supported.
+ */
+
+var attrs = [
+  'id',
+  'src',
+  'rel',
+  'cols',
+  'rows',
+  'name',
+  'href',
+  'title',
+  'style',
+  'width',
+  'height',
+  'tabindex',
+  'placeholder'
+];
+
+/**
  * Expose `dom()`.
  */
 
 exports = module.exports = dom;
+
+/**
+ * Expose supported attrs.
+ */
+
+exports.attrs = attrs;
 
 /**
  * Return a dom `List` for the given
@@ -488,4 +514,14 @@ List.prototype.find = function(selector){
   return list;
 };
 
+/**
+ * Attribute accessors.
+ */
+
+attrs.forEach(function(name){
+  List.prototype[name] = function(val){
+    if (0 == arguments.length) return this.attr(name);
+    return this.attr(name, val);
+  };
+});
 

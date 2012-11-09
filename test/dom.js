@@ -268,3 +268,21 @@ describe('.css()', function(){
     })
   })
 })
+
+dom.attrs.forEach(function(name){
+  describe('.' + name + '()', function(){
+    it('should return the attribute value', function(){
+      var list = dom('<a></a>');
+      list.attr(name, 'tobi');
+      assert('tobi' == list[name]());
+    })
+
+    describe('with a value', function(){
+      it('should set the attribute value', function(){
+        var list = dom('<a></a>');
+        list[name]('tobi');
+        assert('tobi' == list[name]());
+      })
+    })
+  })
+})
