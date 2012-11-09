@@ -88,6 +88,28 @@ List.prototype.clone = function(){
 };
 
 /**
+ * Prepend `val`.
+ *
+ * @param {String|Element|List} val
+ * @return {List} self
+ * @api public
+ */
+
+List.prototype.prepend = function(val){
+  var el = this.els[0];
+  if (!el) return this;
+  val = dom(val);
+  for (var i = 0; i < val.els.length; ++i) {
+    if (el.children.length) {
+      el.insertBefore(val.els[i], el.firstChild);
+    } else {
+      el.appendChild(val.els[i]);
+    }
+  }
+  return this;
+};
+
+/**
  * Append `val`.
  *
  * @param {String|Element|List} val

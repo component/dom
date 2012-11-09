@@ -35,11 +35,29 @@ describe('dom()', function(){
   })
 })
 
+describe('.prepend()', function(){
+  it('should return itself for chaining', function(){
+    var list = dom('<div></div>');
+    assert(list == list.prepend('<p></p>'));
+  })
+
+  it('should prepend the element(s)', function(){
+    var list = dom('<div></div>');
+    list.prepend('<p>One</p>');
+    assert('<p>One</p>' == list.html());
+
+    list.prepend(dom('<p>Two</p>'));
+    assert('<p>Two</p><p>One</p>' == list.html());
+
+    list.prepend(dom('<p>Three</p>'));
+    assert('<p>Three</p><p>Two</p><p>One</p>' == list.html());
+  })
+})
+
 describe('.append()', function(){
   it('should return itself for chaining', function(){
     var list = dom('<div></div>');
-    var el = document.createElement('p');
-    assert(list == list.append(el));
+    assert(list == list.append('<p></p>'));
   })
 
   it('should append the element(s)', function(){
