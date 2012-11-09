@@ -4,14 +4,15 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="mocha/mocha.css" />
     <script src="mocha/mocha.js"></script>
-    <script>mocha.setup({ ui: 'bdd', reporter: mocha.reporters.HTML })</script>
+    <script>mocha.setup('bdd')</script>
   </head>
   <body>
     <div id="mocha"></div>
     <script src="../build/build.js"></script>
     <script src="dom.js"></script>
     <script>
-      mocha.run();
+      if (window.mochaPhantomJS) mochaPhantomJS.run()
+      else mocha.run();
     </script>
   </body>
 </html>
