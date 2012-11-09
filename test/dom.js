@@ -234,18 +234,20 @@ describe('.filter(fn)', function(){
   })
 })
 
-describe('.css(prop, value)', function(){
-  it('should set a style value', function(){
-    var list = dom('<em>Hello</em>');
-    list.css('display', 'none');
-    assert('none' == list.get(0).style.display);
+describe('.css()', function(){
+  describe('with a prop and value', function(){
+    it('should set a style value', function(){
+      var list = dom('<em>Hello</em>');
+      list.css('display', 'none');
+      assert('none' == list.get(0).style.display);
+    })
   })
-})
 
-describe('.css(prop)', function(){
-  it('should get a style value', function(){
-    var list = dom('<em>Hello</em>');
-    list.css('display', 'none');
-    assert('none' == list.css('display'));
+  describe('with a prop', function(){
+    it('should get a style value', function(){
+      var list = dom('<em>Hello</em>');
+      list.css('display', 'none');
+      assert('none' == list.css('display'));
+    })
   })
 })
