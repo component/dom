@@ -11,5 +11,9 @@
     "component/indexof": "*",
     "component/domify": "*",
     "component/classes": "*"
-  }
+  },
+  "development": {
+    "component/assert": "*"
+  },
+  "license": "MIT"
 }
