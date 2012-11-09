@@ -2,19 +2,36 @@
 var assert = require('component-assert')
   , dom = require('dom')
 
-describe('dom(id)', function(){
-  it('should return an element by id', function(){
-    var list = dom('<ul><li id="one">foo</li><li id="two">bar</li></ul>');
-    list = dom('#two', list);
-    assert(1 == list.length(), 'expected length of 1');
-    assert('bar' == list.get(0).textContent);
+describe('dom()', function(){
+  describe('with a selector', function(){
+    it('should return a list', function(){
+      var list = dom('<ul><li id="one">foo</li><li id="two">bar</li></ul>');
+      list = dom('#two', list);
+      assert(1 == list.length(), 'expected length of 1');
+      assert('bar' == list.get(0).textContent);
+    })
   })
-})
 
-describe('dom(html)', function(){
-  it('should return a dom List of elements', function(){
-    var list = dom('<em>Hello</em>');
-    assert('Hello' == list.get(0).textContent);
+  describe('with html', function(){
+    it('should return a list', function(){
+      var list = dom('<em>Hello</em>');
+      assert('Hello' == list.get(0).textContent);
+    })
+  })
+
+  describe('with a List', function(){
+    it('should return the same list', function(){
+      var list = dom('<p>Hello</p>');
+      assert(list == dom(list));
+    })
+  })
+
+  describe('with a dom node', function(){
+    it('should return a list', function(){
+      var p = document.createElement('p');
+      var list = dom(p);
+      assert(p == list.get(0));
+    })
   })
 })
 
