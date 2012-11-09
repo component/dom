@@ -62,6 +62,21 @@ function List(els, selector) {
 }
 
 /**
+ * Return a cloned `List` with all elements cloned.
+ *
+ * @return {List}
+ * @api public
+ */
+
+List.prototype.clone = function(){
+  var arr = [];
+  for (var i = 0, len = this.els.length; i < len; ++i) {
+    arr.push(this.els[i].cloneNode(true));
+  }
+  return new List(arr);
+};
+
+/**
  * Return a `List` containing the element at `i`.
  *
  * @param {Number} i

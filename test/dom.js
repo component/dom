@@ -25,6 +25,16 @@ describe('.length()', function(){
   })
 })
 
+describe('.clone()', function(){
+  it('should clone the list and nodes', function(){
+    var a = dom('<p>Hello</p>');
+    var b = a.clone();
+    assert(a != b);
+    assert('Hello' == b.text());
+    assert(a.get(0) != b.get(0));
+  })
+})
+
 describe('.get(i)', function(){
   it('should return the element at i', function(){
     var list = dom('<em>Hello</em>');
