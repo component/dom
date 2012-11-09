@@ -35,49 +35,27 @@ describe('dom()', function(){
   })
 })
 
-describe('.length()', function(){
-  it('should return the number of elements', function(){
-    var list = dom('<em>Hello</em>');
-    assert(1 == list.length());
-  })
-})
-
-describe('.append(el)', function(){
-  it('should append the element', function(){
-    var list = dom('<div></div>');
-    var el = document.createElement('p');
-    el.textContent = 'One';
-    list.append(el);
-    assert('<p>One</p>' == list.html());
-
-    var el = document.createElement('p');
-    el.textContent = 'Two';
-    list.append(el);
-    assert('<p>One</p><p>Two</p>' == list.html());
-  })
-
+describe('.append()', function(){
   it('should return itself for chaining', function(){
     var list = dom('<div></div>');
     var el = document.createElement('p');
     assert(list == list.append(el));
   })
-})
 
-describe('.append(list)', function(){
-  it('should append the elements', function(){
+  it('should append the element(s)', function(){
     var list = dom('<div></div>');
-    list.append(dom('<p>Hello</p>'));
-    list.append(dom('<p>World</p>'));
-    assert('<p>Hello</p><p>World</p>' == list.html());
+    list.append('<p>One</p>');
+    assert('<p>One</p>' == list.html());
+
+    list.append(dom('<p>Two</p>'));
+    assert('<p>One</p><p>Two</p>' == list.html());
   })
 })
 
-describe('.append(str)', function(){
-  it('should parse the html and append', function(){
-    var list = dom('<div></div>');
-    list.append('<p>Hello</p>');
-    list.append('<p>World</p>');
-    assert('<p>Hello</p><p>World</p>' == list.html());
+describe('.length()', function(){
+  it('should return the number of elements', function(){
+    var list = dom('<em>Hello</em>');
+    assert(1 == list.length());
   })
 })
 
