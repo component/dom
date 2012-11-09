@@ -1,5 +1,6 @@
 
-var dom = require('dom');
+var assert = require('component-assert')
+  , dom = require('dom')
 
 describe('dom(id)', function(){
   it('should return an element by id', function(){
