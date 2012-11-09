@@ -25,6 +25,27 @@ describe('.length()', function(){
   })
 })
 
+describe('.append(el)', function(){
+  it('should append the element', function(){
+    var list = dom('<div></div>');
+    var el = document.createElement('p');
+    el.textContent = 'One';
+    list.append(el);
+    assert('<p>One</p>' == list.html());
+
+    var el = document.createElement('p');
+    el.textContent = 'Two';
+    list.append(el);
+    assert('<p>One</p><p>Two</p>' == list.html());
+  })
+
+  it('should return itself for chaining', function(){
+    var list = dom('<div></div>');
+    var el = document.createElement('p');
+    assert(list == list.append(el));
+  })
+})
+
 describe('.clone()', function(){
   it('should clone the list and nodes', function(){
     var a = dom('<p>Hello</p>');

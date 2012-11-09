@@ -77,6 +77,21 @@ List.prototype.clone = function(){
 };
 
 /**
+ * Append `val`.
+ *
+ * @param {String|Element|List} val
+ * @return {List} self
+ * @api public
+ */
+
+List.prototype.append = function(val){
+  var el = this.els[0];
+  if (!el) return this;
+  el.appendChild(val);
+  return this;
+};
+
+/**
  * Return a `List` containing the element at `i`.
  *
  * @param {Number} i
@@ -152,6 +167,18 @@ List.prototype.text = function(){
 };
 
 /**
+ * Return element html.
+ *
+ * @return {String}
+ * @api public
+ */
+
+List.prototype.html = function(){
+  // TODO: real impl
+  return this.els[0] && this.els[0].innerHTML;
+};
+
+/**
  * Bind to `event` and invoke `fn(e)`. When
  * a `selector` is given then events are delegated.
  *
@@ -216,7 +243,7 @@ List.prototype.off = function(event, selector, fn, capture){
  * Iterate elements and invoke `fn(list, i)`.
  *
  * @param {Function} fn
- * @return {List}
+ * @return {List} self
  * @api public
  */
 
@@ -231,7 +258,7 @@ List.prototype.each = function(fn){
  * Iterate elements and invoke `fn(el, i)`.
  *
  * @param {Function} fn
- * @return {List}
+ * @return {List} self
  * @api public
  */
 
@@ -282,7 +309,7 @@ List.prototype.filter = function(fn){
  * Add the given class `name`.
  *
  * @param {String} name
- * @return {List}
+ * @return {List} self
  * @api public
  */
 
@@ -300,7 +327,7 @@ List.prototype.addClass = function(name){
  * Remove the given class `name`.
  *
  * @param {String} name
- * @return {List}
+ * @return {List} self
  * @api public
  */
 
@@ -318,7 +345,7 @@ List.prototype.removeClass = function(name){
  * Toggle the given class `name`.
  *
  * @param {String} name
- * @return {List}
+ * @return {List} self
  * @api public
  */
 
@@ -369,7 +396,7 @@ List.prototype.css = function(prop, val){
  *
  * @param {String} prop
  * @param {Mixed} val
- * @return {List}
+ * @return {List} self
  * @api private
  */
 
