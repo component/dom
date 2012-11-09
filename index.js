@@ -500,6 +500,14 @@ List.prototype.getStyle = function(prop){
   if (el) return el.style[prop];
 };
 
+/**
+ * Find children matching the given `selector`.
+ *
+ * @param {String} selector
+ * @return {List}
+ * @api public
+ */
+
 List.prototype.find = function(selector){
   // TODO: real implementation
   var list = new List([], this.selector);
