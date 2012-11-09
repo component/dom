@@ -17,9 +17,10 @@ var domify = require('domify')
 exports = module.exports = dom;
 
 /**
- * Return a dom `List` for the given `html` or selector.
+ * Return a dom `List` for the given
+ * `html`, selector, or element.
  *
- * @param {String} html or selector
+ * @param {String|Element|List} 
  * @return {List}
  * @api public
  */
@@ -28,6 +29,16 @@ function dom(selector, context) {
   var ctx = context
     ? (context.els ? context.els[0] : context)
     : document.firstChild;
+
+  // List
+  if (selector instanceof List) {
+    return selector;
+  }
+
+  // node
+  if (selector.nodeName) {
+    return new List([selector]);
+  }
 
   // html
   if ('<' == selector.charAt(0)) {
@@ -87,7 +98,10 @@ List.prototype.clone = function(){
 List.prototype.append = function(val){
   var el = this.els[0];
   if (!el) return this;
-  el.appendChild(val);
+  val = dom(val);
+  for (var i = 0; i < val.els.length; ++i) {
+    el.appendChild(val.els[i]);
+  }
   return this;
 };
 

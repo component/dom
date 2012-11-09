@@ -46,6 +46,24 @@ describe('.append(el)', function(){
   })
 })
 
+describe('.append(list)', function(){
+  it('should append the elements', function(){
+    var list = dom('<div></div>');
+    list.append(dom('<p>Hello</p>'));
+    list.append(dom('<p>World</p>'));
+    assert('<p>Hello</p><p>World</p>' == list.html());
+  })
+})
+
+describe('.append(str)', function(){
+  it('should parse the html and append', function(){
+    var list = dom('<div></div>');
+    list.append('<p>Hello</p>');
+    list.append('<p>World</p>');
+    assert('<p>Hello</p><p>World</p>' == list.html());
+  })
+})
+
 describe('.clone()', function(){
   it('should clone the list and nodes', function(){
     var a = dom('<p>Hello</p>');
