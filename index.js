@@ -56,6 +56,11 @@ function dom(selector, context) {
     ? (context.els ? context.els[0] : context)
     : document.firstChild;
 
+  // array
+  if (Array.isArray(selector)) {
+    return new List(selector);
+  }
+
   // List
   if (selector instanceof List) {
     return selector;
