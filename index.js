@@ -46,7 +46,7 @@ exports.attrs = attrs;
  * Return a dom `List` for the given
  * `html`, selector, or element.
  *
- * @param {String|Element|List} 
+ * @param {String|Element|List}
  * @return {List}
  * @api public
  */
@@ -73,7 +73,7 @@ function dom(selector, context) {
 
   // html
   if ('<' == selector.charAt(0)) {
-    return new List([domify(selector)], selector);
+    return new List([domify(selector)[0]], selector);
   }
 
   // selector
