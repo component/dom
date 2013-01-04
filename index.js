@@ -427,20 +427,32 @@ List.prototype.removeClass = function(name){
 };
 
 /**
- * Toggle the given class `name`.
+ * Toggle the given class `name`,
+ * optionally a `bool` may be given
+ * to indicate that the class should
+ * be added when truthy.
  *
  * @param {String} name
+ * @param {Boolean} bool
  * @return {List} self
  * @api public
  */
 
-List.prototype.toggleClass = function(name){
+List.prototype.toggleClass = function(name, bool){
   var el;
+  var fn = 'toggle';
+
+  // toggle with boolean
+  if (2 == arguments.length) {
+    fn = bool ? 'add' : 'remove';
+  }
+
   for (var i = 0; i < this.els.length; ++i) {
     el = this.els[i];
     el._classes = el._classes || classes(el);
-    el._classes.toggle(name);
+    el._classes[fn](name);
   }
+
   return this;
 };
 

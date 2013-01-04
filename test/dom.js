@@ -131,7 +131,7 @@ describe('.removeClass(name)', function(){
   })
 })
 
-describe('.toggleClass(name)', function(){
+describe('.toggleClass(name, [bool])', function(){
   it('should toggle the given class name', function(){
     var list = dom('<em>Hello</em>');
 
@@ -140,6 +140,18 @@ describe('.toggleClass(name)', function(){
 
     list.toggleClass('show');
     assert('' == list.get(0).className);
+  })
+
+  describe('when a bool is given', function(){
+    it('should add the class when truthy', function(){
+      var list = dom('<em>Hello</em>');
+
+      list.toggleClass('show', 0);
+      assert('' == list.get(0).className);
+
+      list.toggleClass('show', 1);
+      assert('show' == list.get(0).className);
+    })
   })
 })
 
