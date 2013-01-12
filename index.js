@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -529,7 +528,7 @@ List.prototype.find = function(selector){
   // TODO: real implementation
   var list = new List([], this.selector);
   var el, els;
-  for (var i = 0; i < this.els.length; ++i) {
+  for (var i = 0, len = this.els.length; i < len; ++i) {
     el = this.els[i];
     els = el.querySelectorAll(selector);
     for (var j = 0; j < els.length; ++j) {
@@ -538,6 +537,27 @@ List.prototype.find = function(selector){
   }
   return list;
 };
+
+/**
+ * Empty the dom list
+ * 
+ * @return self
+ * @api public
+ */
+List.prototype.empty = function(){
+  var elem
+    , i = 0;
+  
+  for (var i = 0, len = this.els.length; i < len; ++i) {
+    el = this.els[i];
+    
+    while (el.firstChild) {
+      el.removeChild(el.firstChild);
+    }
+  }
+  
+  return this;
+}
 
 /**
  * Attribute accessors.
