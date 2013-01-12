@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -476,6 +475,7 @@ List.prototype.hasClass = function(name){
 
 /**
  * Set CSS `prop` to `val` or get `prop` value.
+ * Also accepts an object (`prop`: `val`)
  *
  * @param {String} prop
  * @param {Mixed} val
@@ -485,7 +485,14 @@ List.prototype.hasClass = function(name){
 
 List.prototype.css = function(prop, val){
   if (2 == arguments.length) return this.setStyle(prop, val);
-  return this.getStyle(prop);
+  
+  if ('object' == type(prop)) {
+    for (var p in prop) {
+      this.setStyle(p, prop[p]);
+    }
+  } else {
+    return this.getStyle(prop);
+  }
 };
 
 /**
