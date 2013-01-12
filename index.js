@@ -490,6 +490,8 @@ List.prototype.css = function(prop, val){
     for (var p in prop) {
       this.setStyle(p, prop[p]);
     }
+    
+    return this;
   } else {
     return this.getStyle(prop);
   }
