@@ -411,18 +411,34 @@ List.prototype.addClass = function(name){
 /**
  * Remove the given class `name`.
  *
- * @param {String} name
+ * @param {String|RegExp} name
  * @return {List} self
  * @api public
  */
 
 List.prototype.removeClass = function(name){
   var el;
+
+  if ('regexp' == type(name)) {
+    for (var i = 0; i < this.els.length; ++i) {
+      el = this.els[i];
+      el._classes = el._classes || classes(el);
+      var arr = el._classes.array();
+      for (var j = 0; j < arr.length; j++) {
+        if (name.test(arr[j])) {
+          el._classes.remove(arr[j]);
+        }
+      }
+    }
+    return this;
+  }
+
   for (var i = 0; i < this.els.length; ++i) {
     el = this.els[i];
     el._classes = el._classes || classes(el);
     el._classes.remove(name);
   }
+
   return this;
 };
 

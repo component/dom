@@ -129,6 +129,15 @@ describe('.removeClass(name)', function(){
     list.addClass('foo').addClass('bar').removeClass('foo');
     assert('bar' == list.get(0).className);
   })
+
+  it('should remove with regexp', function(){
+    var list = dom('<em>Hello</em>');
+    list.addClass('foo');
+    list.addClass('bar');
+    list.addClass('baz');
+    list.removeClass(/^b/);
+    assert('foo' == list.get(0).className);
+  })
 })
 
 describe('.toggleClass(name, [bool])', function(){
