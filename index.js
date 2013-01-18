@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -175,6 +174,17 @@ List.prototype.append = function(val){
   }
   return this;
 };
+
+/**
+ * Append self's `el` to `val`
+ * 
+ * @param {String|Element|List} val
+ * @return {List} self
+ * @api public
+ */
+List.prototype.appendTo = function(val){
+  dom(val).append(this);
+}
 
 /**
  * Return a `List` containing the element at `i`.
