@@ -545,7 +545,7 @@ List.prototype.find = function(selector){
  * @api public
  */
 List.prototype.empty = function(){
-  var elem
+  var elem, el
     , i = 0;
   
   for (var i = 0, len = this.els.length; i < len; ++i) {

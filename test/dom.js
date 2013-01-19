@@ -246,6 +246,18 @@ describe('.filter(fn)', function(){
   })
 })
 
+describe('.empty()', function(){
+  it('should return itself for chaining', function(){
+    var list = dom('<div></div>');
+    assert(list == list.empty());
+  })
+
+  it('should empty the element(s)', function(){
+    var list = dom('<div></div>');
+    assert('' == list.empty().html());
+  })
+})
+
 describe('.attr()', function(){
   describe('with a key and value', function(){
     it('should set the attribute', function(){

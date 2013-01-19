@@ -45,6 +45,7 @@ dom('li').select(function(el){
    - [.toggleClass(name)](#toggleclassname)
    - [.hasClass(name)](#hasclassname)
    - [.find(selector)](#findselector)
+   - [.empty()](#empty)
    - [.each(fn)](#eachfn)
    - [.forEach(fn)](#foreachfn)
    - [.map(fn)](#mapfn)
@@ -176,6 +177,15 @@ should return descendants matching the selector.
 var list = dom('<ul><li>foo</li><li>bar</li></ul>');
 list = list.find('li');
 assert(2 == list.length());
+```
+
+<a name="empty"></a>
+### .empty()
+should empty the elements.
+
+```js
+var list = dom('<div></div>');
+assert('' == list.empty().html());
 ```
 
 <a name="eachfn"></a>
