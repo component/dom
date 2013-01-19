@@ -279,6 +279,21 @@ describe('.css()', function(){
       assert('none' == list.css('display'));
     })
   })
+
+  describe('with an object', function(){
+    it('should return itself for chaining', function(){
+      var list = dom('<em>Hello</em>');
+      assert(list == list.css({display: 'none'}));
+    })
+
+    it('should apply all given values', function(){
+      var list = dom('<em>Hello</em>');
+      list.css({display: 'none', 'font-weight': 'bold'});
+
+      assert('none' == list.css('display'));
+      assert('bold' == list.css('font-weight'));
+    })
+  })
 })
 
 dom.attrs.forEach(function(name){
