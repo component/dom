@@ -52,6 +52,7 @@ dom('li').select(function(el){
    - [.filter(fn)](#filterfn)
    - [.css(prop, value)](#cssprop-value)
    - [.css(prop)](#cssprop)
+   - [.css(obj)](#cssobj)
 
 <a name="domid"></a>
 ### dom(id)
@@ -277,6 +278,18 @@ should get a style value.
 var list = dom('<em>Hello</em>');
 list.css('display', 'none');
 assert('none' == list.css('display'));
+```
+
+<a name="cssobj"></a>
+### .css(obj)
+should sets values and return itself.
+
+```js
+var list = dom('<em>Hello</em>');
+list.css({display: 'none', 'font-weight': 'bold'});
+
+assert('none' == list.css('display'));
+assert('bold' == list.css('font-weight'));
 ```
 
 ## Notes
