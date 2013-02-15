@@ -513,16 +513,15 @@ List.prototype.hasClass = function(name){
 
 List.prototype.css = function(prop, val){
   if (2 == arguments.length) return this.setStyle(prop, val);
-  
+
   if ('object' == type(prop)) {
-    for (var p in prop) {
-      this.setStyle(p, prop[p]);
+    for (var key in prop) {
+      this.setStyle(key, prop[key]);
     }
-    
     return this;
-  } else {
-    return this.getStyle(prop);
   }
+
+  return this.getStyle(prop);
 };
 
 /**

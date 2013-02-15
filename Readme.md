@@ -286,7 +286,7 @@ should sets values and return itself.
 
 ```js
 var list = dom('<em>Hello</em>');
-list.css({display: 'none', 'font-weight': 'bold'});
+list.css({ display: 'none', 'font-weight': 'bold' });
 
 assert('none' == list.css('display'));
 assert('bold' == list.css('font-weight'));
@@ -302,6 +302,6 @@ assert('bold' == list.css('font-weight'));
   This lib will not include _any_ XHR support, that is out of scope,
   this library is for DOM manipulation, traversal, and events only.
 
-## License 
+## License
 
   MIT

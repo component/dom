@@ -10,7 +10,8 @@
     "component/delegate": "*",
     "component/indexof": "*",
     "component/domify": "*",
-    "component/classes": "*"
+    "component/classes": "*",
+    "component/sort": "*"
   },
   "development": {
     "component/assert": "*"
