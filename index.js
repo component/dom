@@ -185,6 +185,7 @@ List.prototype.append = function(val){
 
 List.prototype.appendTo = function(val){
   dom(val).append(this);
+  return this;
 };
 
 /**
