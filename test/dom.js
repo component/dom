@@ -70,6 +70,25 @@ describe('.append()', function(){
   })
 })
 
+describe('.appendTo()', function () {
+  it('should return itself for chaining', function () {
+    var list = dom('<p>')
+    var parent = document.createElement('div');
+    assert(list == list.appendTo(parent))
+  })
+
+  it('should append elements to parent', function () {
+    var list = dom('<p>');
+    var p1 = dom('<div>');
+    list.appendTo(p1);
+    assert('<p></p>' == p1.html());
+
+    var p2 = document.createElement('div');
+    list.appendTo(p2);
+    assert('<p></p>' == p2.innerHTML);
+  })
+})
+
 describe('.length()', function(){
   it('should return the number of elements', function(){
     var list = dom('<em>Hello</em>');
