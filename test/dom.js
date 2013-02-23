@@ -70,14 +70,14 @@ describe('.append()', function(){
   })
 })
 
-describe('.appendTo()', function () {
-  it('should return itself for chaining', function () {
+describe('.appendTo()', function(){
+  it('should return itself for chaining', function(){
     var list = dom('<p>')
     var parent = document.createElement('div');
     assert(list == list.appendTo(parent))
   })
 
-  it('should append elements to parent', function () {
+  it('should append elements to parent', function(){
     var list = dom('<p>');
     var p1 = dom('<div>');
     list.appendTo(p1);
@@ -111,7 +111,8 @@ describe('.get(i)', function(){
     var list = dom('<em>Hello</em>');
     assert('Hello' == list.get(0).textContent);
   })
-  it('should return the first element if index is not specified', function () {
+
+  it('should return the first element if index is not specified', function(){
     var list = dom('<em>Hello</em>');
     assert('Hello' == list.get().textContent);
   })
