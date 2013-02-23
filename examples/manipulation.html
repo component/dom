@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>dom - manipulation</title>
+</head>
+<body>
+  <ul></ul>
+  <button onclick="addItem()">add item</button>
+  <button onclick="removeItems()">remove items</button>
+  <script type="text/javascript" src="../build/build.js"></script>
+  <script>
+    var dom = require('dom');
+
+    function removeItems() {
+      dom('ul li').remove();
+    }
+
+    function addItem() {
+      var val = prompt('Item:');
+      dom('ul').append('<li></li>').text(val);
+    }
+  </script>
+</body>
+</html>
