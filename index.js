@@ -233,7 +233,7 @@ List.prototype.last = function(){
  */
 
 List.prototype.get = function(i){
-  return this.els[i];
+  return this.els[i || 0];
 };
 
 /**

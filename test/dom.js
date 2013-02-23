@@ -111,6 +111,10 @@ describe('.get(i)', function(){
     var list = dom('<em>Hello</em>');
     assert('Hello' == list.get(0).textContent);
   })
+  it('should return the first element if index is not specified', function () {
+    var list = dom('<em>Hello</em>');
+    assert('Hello' == list.get().textContent);
+  })
 })
 
 describe('.at(i)', function(){
