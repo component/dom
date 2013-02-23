@@ -5,20 +5,20 @@
 </head>
 <body>
   <ul></ul>
-  <button onclick="addItem()">add item</button>
-  <button onclick="removeItems()">remove items</button>
+  <button class="add">add item</button>
+  <button class="remove">remove items</button>
   <script type="text/javascript" src="../build/build.js"></script>
   <script>
     var dom = require('dom');
 
-    function removeItems() {
-      dom('ul li').remove();
-    }
-
-    function addItem() {
+    dom('.add').on('click', function(){
       var val = prompt('Item:');
       dom('ul').append('<li></li>').text(val);
-    }
+    });
+
+    dom('.remove').on('click', function(){
+      dom('ul li').remove();
+    });
   </script>
 </body>
 </html>
