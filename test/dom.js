@@ -99,14 +99,22 @@ describe('.length()', function(){
 
 describe('.html()', function(){
   it('should return an html string', function(){
-    var a = dom('<p>Hello <em>World></em><p>');
+    var a = dom('<p>Hello <em>World</em><p>');
     assert('Hello <em>World</em>' == a.html());
+  })
+})
+
+describe('.html(str)', function(){
+  it('should set inner html', function(){
+    var a = dom('<p>Hello <em>World</em><p>');
+    a.html('<em>whoop</em>');
+    assert('<em>whoop</em>' == a.html());
   })
 })
 
 describe('.text()', function(){
   it('should return the text content', function(){
-    var a = dom('<p>Hello <em>World></em><p>');
+    var a = dom('<p>Hello <em>World</em><p>');
     assert('Hello World' == a.text());
   })
 })
