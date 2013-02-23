@@ -272,12 +272,20 @@ List.prototype.length = function(){
 /**
  * Return element text.
  *
- * @return {String}
+ * @param {String} str
+ * @return {String|List}
  * @api public
  */
 
-List.prototype.text = function(){
+List.prototype.text = function(str){
   // TODO: real impl
+  if (1 == arguments.length) {
+    this.forEach(function(el){
+      el.textContent = str;
+    });
+    return this;
+  }
+
   var str = '';
   for (var i = 0; i < this.els.length; ++i) {
     str += this.els[i].textContent;
