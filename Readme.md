@@ -21,9 +21,9 @@ $ component install component/dom
 
 ## Stand-alone
 
-  Stand-alone with no dependencies dom is ~5kb gzipped,
-  just simply include `./dom.js` to your application and
-  reference the `dom` global.
+  This library may be used stand-alone without the component
+  tool, simply add ./dom.js to your application and reference
+  the `dom` global. With all its dependencies dom is ~5kb gzipped.
 
 ## Example
 
