@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>dom - event delegation</title>
+</head>
+<body>
+  <ul></ul>
+  <script type="text/javascript" src="../build/build.js"></script>
+  <script>
+    var dom = require('dom');
+
+    var n = 0;
+    setInterval(function(){
+      dom('ul')
+      .append('<li></li>')
+      .html('item ' + ++n + ' <a href="#">x</a>');
+    }, 1500);
+
+    dom('ul').on('click', 'a', function(e){
+      dom(e.target.parentNode).remove();
+    });
+  </script>
+</body>
+</html>

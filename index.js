@@ -310,11 +310,16 @@ List.prototype.text = function(str){
 /**
  * Return element html.
  *
- * @return {String}
+ * @return {String} html
  * @api public
  */
 
-List.prototype.html = function(){
+List.prototype.html = function(html){
+  if (1 == arguments.length) {
+    this.forEach(function(el){
+      el.innerHTML = html;
+    });
+  }
   // TODO: real impl
   return this.els[0] && this.els[0].innerHTML;
 };
