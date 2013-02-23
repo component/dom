@@ -89,6 +89,22 @@ dom('ul li').on('click', 'a.remove', function(e){
 });
 ```
 
+### .off(event, fn, [capture])
+
+  Unbind `event` callback `fn`.
+
+```js
+dom('a.remove').off('click', onremove);
+```
+
+### .off(event, selector, fn, [capture])
+
+  Unbind delegate `event` callback `fn` with `selector`.
+
+```js
+dom('ul li').off('click', 'a.remove', onremove);
+```
+
 ### .appendTo(list)
 
   Append elements in the list to `list`
