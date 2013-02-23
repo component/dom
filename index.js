@@ -112,12 +112,11 @@ function List(els, selector) {
  */
 
 List.prototype.attr = function(name, val){
-  if (2 == arguments.length) {
-    this.els[0].setAttribute(name, val);
-    return this;
-  } else {
-    return this.els[0].getAttribute(name);
-  }
+  return 1 == arguments.length
+    ? this.els[0] && this.els[0].getAttribute(name)
+    : this.forEach(function (el) {
+      el.setAttribute(name, val);
+    });
 };
 
 /**

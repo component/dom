@@ -277,9 +277,11 @@ describe('.filter(fn)', function(){
 describe('.attr()', function(){
   describe('with a key and value', function(){
     it('should set the attribute', function(){
-      var list = dom('<a></a>');
-      list.attr('href', '#');
+      var list = dom('<div><a></a><a></a></div>').find('a');
+      var ret = list.attr('href', '#');
+      assert(ret == list);
       assert('#' == list.get(0).getAttribute('href'));
+      assert('#' == list.get(1).getAttribute('href'));
     })
   })
 
