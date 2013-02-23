@@ -97,6 +97,13 @@ describe('.length()', function(){
   })
 })
 
+describe('.text()', function(){
+  it('should return the text content', function(){
+    var a = dom('<p>Hello <em>World></em><p>');
+    assert('Hello World' == a.text());
+  })
+})
+
 describe('.clone()', function(){
   it('should clone the list and nodes', function(){
     var a = dom('<p>Hello</p>');
