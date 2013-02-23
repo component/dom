@@ -13,9 +13,17 @@
 
 ## Installation
 
+  With [component](https://github.com/component/component):
+
 ```
 $ component install component/dom
 ```
+
+## Stand-alone without component
+
+  Stand-alone with no dependencies dom is ~5kb gzipped,
+  just simply include `./dom.js` to your application and
+  reference the `dom` global.
 
 ## Example
 
