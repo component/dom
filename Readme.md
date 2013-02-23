@@ -69,6 +69,26 @@ dom('ul')
   .addClass('user');
 ```
 
+### .on(event, fn, [capture])
+
+  Bind `event` handler function:
+
+```js
+dom('a.remove').on('click', function(e){
+
+});
+```
+
+### .on(event, selector, fn, [capture])
+
+  Bind delegate `event` handler function for `selector`:
+
+```js
+dom('ul li').on('click', 'a.remove', function(e){
+
+});
+```
+
 ### .appendTo(list)
 
   Append elements in the list to `list`
