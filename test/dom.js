@@ -97,6 +97,13 @@ describe('.length()', function(){
   })
 })
 
+describe('.html()', function(){
+  it('should return an html string', function(){
+    var a = dom('<p>Hello <em>World></em><p>');
+    assert('Hello <em>World</em>' == a.html());
+  })
+})
+
 describe('.text()', function(){
   it('should return the text content', function(){
     var a = dom('<p>Hello <em>World></em><p>');
