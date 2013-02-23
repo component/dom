@@ -67,7 +67,7 @@ function dom(selector, context) {
   }
 
   if ('string' != typeof selector) {
-    throw new Error('Wrong selector type');
+    throw new TypeError('invalid selector');
   }
 
   // html
