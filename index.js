@@ -121,6 +121,23 @@ List.prototype.attr = function(name, val){
 };
 
 /**
+ * Set property `name` to `val`, or get property `name`.
+ *
+ * @param {String} name
+ * @param {String} [val]
+ * @return {Object|List} self
+ * @api public
+ */
+
+List.prototype.prop = function(name, val){
+  return arguments.length == 1
+    ? this.els[0] && this.els[0][name]
+    : this.forEach(function (el) {
+      el[name] = val;
+    });
+};
+
+/**
  * Return a cloned `List` with all elements cloned.
  *
  * @return {List}

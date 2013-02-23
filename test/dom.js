@@ -296,6 +296,25 @@ describe('.attr()', function(){
   })
 })
 
+describe('.prop()', function () {
+  describe('with a key and value', function () {
+    it('should set the property', function () {
+      var list = dom('<div><a href="#"></a><a href="#"></a></div>').find('a');
+      var ret = list.prop('hash', '#foo');
+      assert(ret == list);
+      assert('#foo' == list.get(0).hash);
+      assert('#foo' == list.get(1).hash);
+    })
+  })
+
+  describe('with a key', function(){
+    it('should return the property', function(){
+      var list = dom('<a href="#foo">');
+      assert('#foo' == list.prop('hash'));
+    })
+  })
+})
+
 describe('.css()', function(){
   describe('with a key and value', function(){
     it('should set a style value', function(){
