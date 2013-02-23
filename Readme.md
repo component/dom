@@ -299,8 +299,8 @@ assert('bold' == list.css('font-weight'));
   the functionality provided. Otherwise it is preferred that you use
   the smaller more specific components.
 
-  This lib will not include _any_ XHR support, that is out of scope,
-  this library is for DOM manipulation, traversal, and events only.
+  This lib will not include _any_ XHR support, js animations, promises, or anything
+  else out of scope. This library is for DOM manipulation, traversal, and events only.
 
 ## License
 
