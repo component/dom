@@ -161,7 +161,7 @@ List.prototype.clone = function(){
  * Prepend `val`.
  *
  * @param {String|Element|List} val
- * @return {List} self
+ * @return {List} new list
  * @api public
  */
 
@@ -176,14 +176,14 @@ List.prototype.prepend = function(val){
       el.appendChild(val.els[i]);
     }
   }
-  return this;
+  return val;
 };
 
 /**
  * Append `val`.
  *
  * @param {String|Element|List} val
- * @return {List} self
+ * @return {List} new list
  * @api public
  */
 
@@ -194,7 +194,7 @@ List.prototype.append = function(val){
   for (var i = 0; i < val.els.length; ++i) {
     el.appendChild(val.els[i]);
   }
-  return this;
+  return val;
 };
 
 /**

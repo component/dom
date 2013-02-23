@@ -37,9 +37,9 @@ describe('dom()', function(){
 })
 
 describe('.prepend()', function(){
-  it('should return itself for chaining', function(){
+  it('should return the new list', function(){
     var list = dom('<div></div>');
-    assert(list == list.prepend('<p></p>'));
+    assert(list != list.prepend('<p></p>'));
   })
 
   it('should prepend the element(s)', function(){
@@ -56,9 +56,9 @@ describe('.prepend()', function(){
 })
 
 describe('.append()', function(){
-  it('should return itself for chaining', function(){
+  it('should return the new list', function(){
     var list = dom('<div></div>');
-    assert(list == list.append('<p></p>'));
+    assert(list != list.append('<p></p>'));
   })
 
   it('should append the element(s)', function(){
