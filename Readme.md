@@ -29,268 +29,271 @@ dom('li').select(function(el){
 
 ## API
 
-  ... not even remotely done, feel free to fork and help ...
+  All occurrances of `list` refer to:
 
-## API
+  - an element passed
+  - a string of html
+  - a selector string
+  - a node list
+  - an array of nodes
+  - a dom `List` itself
 
-   - [dom(id)](#domid)
-   - [dom(html)](#domhtml)
-   - [.length()](#length)
-   - [.get(i)](#geti)
-   - [.at(i)](#ati)
-   - [.first()](#first)
-   - [.last()](#last)
-   - [.addClass(name)](#addclassname)
-   - [.removeClass(name)](#removeclassname)
-   - [.toggleClass(name)](#toggleclassname)
-   - [.hasClass(name)](#hasclassname)
-   - [.find(selector)](#findselector)
-   - [.each(fn)](#eachfn)
-   - [.forEach(fn)](#foreachfn)
-   - [.map(fn)](#mapfn)
-   - [.select(fn)](#selectfn)
-   - [.filter(fn)](#filterfn)
-   - [.css(prop, value)](#cssprop-value)
-   - [.css(prop)](#cssprop)
-   - [.css(obj)](#cssobj)
+### dom(list)
 
-<a name="domid"></a>
-### dom(id)
-should return an element by id.
+  Return a `List` with the given element(s)
+  via selector, html, arrays, nodelists, etc.
 
 ```js
-var list = dom('<ul><li id="one">foo</li><li id="two">bar</li></ul>');
-list = dom('#two', list);
-assert(1 == list.length(), 'expected length of 1');
-assert('bar' == list.get(0).textContent);
+dom('ul li');
+dom(dom('a'));
+dom('<p>Hello</p>');
 ```
 
-<a name="domhtml"></a>
-### dom(html)
-should return a dom List of elements.
+### .append(list)
+
+  Append and return `list`:
 
 ```js
-var list = dom('<em>Hello</em>');
-assert('Hello' == list.get(0).textContent);
+dom('ul')
+  .append('<li>Tobi</li>')
+  .addClass('user');
 ```
 
-<a name="length"></a>
-### .length()
-should return the number of elements.
+### .prepend(list)
+
+  Prepend and return `list`:
 
 ```js
-var list = dom('<em>Hello</em>');
-assert(1 == list.length());
+dom('ul')
+  .prepend('<li>Tobi</li>')
+  .addClass('user');
 ```
 
-<a name="geti"></a>
-### .get(i)
-should return the element at i.
+### .appendTo(list)
+
+  Append elements in the list to `list`
+  and return itself for chaining.
 
 ```js
-var list = dom('<em>Hello</em>');
-assert('Hello' == list.get(0).textContent);
+dom('<li>Tobi</li>')
+  .appendTo('ul')
+  .addClass('user');
 ```
 
-<a name="ati"></a>
-### .at(i)
-should return the element at i as a List.
+### .attr(name)
+
+  Return value for attribute `name`:
 
 ```js
-var list = dom('<em>Hello</em>');
-assert('Hello' == list.at(0).get(0).textContent);
+var url = dom('img').attr('src');
 ```
 
-<a name="first"></a>
-### .first()
-should return the first element in the List.
+### .attr(name, val)
+
+  Set attribute `name` to `val`.
 
 ```js
-var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
-assert('foo' == list.first().text());
+dom('img').attr('src', 'image/of/maru.jpg');
 ```
 
-<a name="last"></a>
-### .last()
-should return the last element in the List.
+### .ATTR()
+
+  Attribute getters. These are functionally equivalent
+  to `.attr(ATTR)`:
 
 ```js
-var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
-assert('bar' == list.last().text());
+el.id()
+el.src()
+el.rel()
+el.cols()
+el.rows()
+el.name()
+el.href()
+el.title()
+el.style()
+el.tabindex()
+el.placeholder()
 ```
 
-<a name="addclassname"></a>
-### .addClass(name)
-should add the given class name.
+### .ATTR(val)
+
+  Attribute setters. These are functionally equivalent
+  to `.attr(ATTR, val)`:
 
 ```js
-var list = dom('<em>Hello</em>');
-list.addClass('foo').addClass('bar');
-assert('foo bar' == list.get(0).className);
+el.id('item-1')
+el.src('some/image.png')
+el.rel('stylesheet')
+el.cols(2)
+el.rows(3)
+el.name('username')
+el.href('http://google.com')
+el.title('Maru the cat')
+el.style('color: white')
+el.tabindex(2)
+el.placeholder('Username')
 ```
 
-<a name="removeclassname"></a>
-### .removeClass(name)
-should remove the given class name.
-
-```js
-var list = dom('<em>Hello</em>');
-list.addClass('foo').addClass('bar').removeClass('foo');
-assert('bar' == list.get(0).className);
-```
-
-<a name="toggleclassname"></a>
-### .toggleClass(name)
-should toggle the given class name.
-
-```js
-var list = dom('<em>Hello</em>');
-
-list.toggleClass('show');
-assert('show' == list.get(0).className);
-
-list.toggleClass('show');
-assert('' == list.get(0).className);
-```
-
-<a name="hasclassname"></a>
-### .hasClass(name)
-should return true when the classname is present.
-
-```js
-var list = dom('<em>Hello</em>').addClass('show');
-assert(true === list.hasClass('show'));
-```
-
-should return false when the classname is not present.
-
-```js
-var list = dom('<em>Hello</em>').addClass('show');
-assert(false === list.hasClass('hide'));
-```
-
-<a name="findselector"></a>
-### .find(selector)
-should return descendants matching the selector.
-
-```js
-var list = dom('<ul><li>foo</li><li>bar</li></ul>');
-list = list.find('li');
-assert(2 == list.length());
-```
-
-<a name="eachfn"></a>
-### .each(fn)
-should iterate passing (list, i).
-
-```js
-var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
-
-var indexes = [];
-var values = [];
-var ret = list.each(function(el, i){
-  indexes.push(i);
-  values.push(el);
-});
-
-assert(ret == list, 'should return self for chaining');
-assert(0 == indexes[0]);
-assert(1 == indexes[1]);
-assert(values[0] instanceof dom.List, 'values should be dom lists');
-assert(list.get(0) == values[0].get(0));
-assert(list.get(1) == values[1].get(0));
-```
-
-<a name="foreachfn"></a>
-### .forEach(fn)
-should iterate passing (el, i).
-
-```js
-var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
-
-var indexes = [];
-var values = [];
-var ret = list.forEach(function(el, i){
-  indexes.push(i);
-  values.push(el);
-});
-
-assert(ret == list, 'should return self for chaining');
-assert(0 == indexes[0]);
-assert(1 == indexes[1]);
-assert(!(values[0] instanceof dom.List), 'values should be elements');
-assert(list.get(0) == values[0]);
-assert(list.get(1) == values[1]);
-```
-
-<a name="mapfn"></a>
-### .map(fn)
-should map passing (list, i).
-
-```js
-var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
-
-var ret = list.map(function(el, i){
-  return el.text();
-}).join('|');
-
-assert('foo|bar' == ret);
-```
-
-<a name="selectfn"></a>
-### .select(fn)
-should filter passing (list, i).
-
-```js
-var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
-
-var selected = list.select(function(el){
-  return el.text() == 'bar';
-});
-
-assert(1 == selected.length(), 'invalid length');
-assert(selected.get(0) == list.get(1));
-```
-
-<a name="filterfn"></a>
-### .filter(fn)
-should alias .select.
-
-```js
-assert(dom.List.prototype.filter == dom.List.prototype.select);
-```
-
-<a name="cssprop-value"></a>
-### .css(prop, value)
-should set a style value.
-
-```js
-var list = dom('<em>Hello</em>');
-list.css('display', 'none');
-assert('none' == list.get(0).style.display);
-```
-
-<a name="cssprop"></a>
 ### .css(prop)
-should get a style value.
+
+  Get css property value:
 
 ```js
-var list = dom('<em>Hello</em>');
-list.css('display', 'none');
-assert('none' == list.css('display'));
+dom(el).css('width');
 ```
 
-<a name="cssobj"></a>
-### .css(obj)
-should sets values and return itself.
+### .css(prop, val)
+
+  Set css property value:
 
 ```js
-var list = dom('<em>Hello</em>');
-list.css({ display: 'none', 'font-weight': 'bold' });
-
-assert('none' == list.css('display'));
-assert('bold' == list.css('font-weight'));
+dom(el).css('width', '300px');
 ```
+
+### .css(object)
+
+  Set css property values:
+
+```js
+dom(el).css({
+  top: 5,
+  left: 10
+});
+```
+
+### .addClass(name)
+
+  Add a class `name` to all elements in the list.
+
+```js
+dom('img').addClass('loading');
+```
+
+### .removeClass(name)
+
+  Remove class `name` to all elements in the list.
+
+```js
+dom('img.loading').removeClass('loading');
+```
+
+### .toggleClass(name, [bool])
+
+  Toggle class `name`, with optional `bool`.
+
+```js
+dom('img').toggleClass('loading');
+dom('img').toggleClass('loading', image.pending);
+```
+
+### .hasClass(name)
+
+  Check if any element in the list has the given class `name`.
+
+```js
+dom('img').hasClass('loading');
+```
+
+### .find(selector)
+
+  Return a list of descendants matching `selector`.
+
+```js
+dom('.uploads').find('.complete').remove();
+```
+
+### .each(fn)
+
+  Iterate elements passing each one as a list, and its index:
+
+```js
+dom('ul li').each(function(li, i){
+  if (li.hasClass('complete')) {
+    li.remove();
+  }
+});
+```
+
+### .forEach(fn)
+
+  Iterate elements passing each one, and its index:
+
+```js
+dom('ul li').forEach(function(li, i){
+  if (li.className == 'complete') {
+    li.parentNode.removeChild(li);
+  }
+});
+```
+
+### .map(fn)
+
+  Return an array with map `fn`, passing each element as a list:
+
+```js
+var hrefs = dom('a').forEach(function(a){
+  return a.attr('href');
+});
+```
+
+### .select(fn)
+
+  Filter elements with the given function, passing each element
+  as a list. This method is aliased as `.filter(fn)`.
+
+```js
+var pending = dom('ul li').select(function(li){
+  return li.hasClass('pending');
+});
+```
+
+### .first()
+
+  Return a `List` containing the first element:
+
+```js
+dom('ul li').first().remove();
+```
+
+### .last()
+
+  Return a `List` containing the last element:
+
+```js
+dom('ul li').last().remove();
+```
+
+### .length()
+
+  Return the number of elements in the list.
+
+### .html()
+
+  Return the inner html.
+
+### .html(str)
+
+  Set the inner html to `str`.
+
+### .text()
+
+  Return the text content.
+
+### .text(str)
+
+  Set text content to `str`.
+
+### .clone()
+
+  Return a cloned list of cloned nodes.
+
+### .get(i)
+
+  Return the `i`th element.
+
+### .at(i)
+
+  Return a `List` containing the `i`th element.
 
 ## Notes
 
