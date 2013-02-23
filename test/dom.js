@@ -104,6 +104,14 @@ describe('.text()', function(){
   })
 })
 
+describe('.text(str)', function(){
+  it('should set text content', function(){
+    var a = dom('<p>Hello <em>World></em><p>');
+    a.text('Hello');
+    assert('Hello' == a.text());
+  })
+})
+
 describe('.clone()', function(){
   it('should clone the list and nodes', function(){
     var a = dom('<p>Hello</p>');
