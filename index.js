@@ -130,11 +130,13 @@ List.prototype.attr = function(name, val){
  */
 
 List.prototype.prop = function(name, val){
-  return arguments.length == 1
-    ? this.els[0] && this.els[0][name]
-    : this.forEach(function (el) {
-      el[name] = val;
-    });
+  if (1 == arguments.length) {
+    return this.els[0] && this.els[0][name];
+  }
+
+  return this.forEach(function(el){
+    el[name] = val;
+  });
 };
 
 /**
