@@ -105,6 +105,20 @@ function List(els, selector) {
 }
 
 /**
+ * Remove elements from the DOM.
+ *
+ * @api public
+ */
+
+List.prototype.remove = function(){
+  for (var i = 0; i < this.els.length; i++) {
+    var el = this.els[i];
+    var parent = el.parentNode;
+    if (parent) parent.removeChild(el);
+  }
+};
+
+/**
  * Set attribute `name` to `val`, or get attr `name`.
  *
  * @param {String} name
