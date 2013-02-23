@@ -51,10 +51,6 @@ exports.attrs = attrs;
  */
 
 function dom(selector, context) {
-  var ctx = context
-    ? (context.els ? context.els[0] : context)
-    : document.firstChild;
-
   // array
   if (Array.isArray(selector)) {
     return new List(selector);
@@ -70,15 +66,21 @@ function dom(selector, context) {
     return new List([selector]);
   }
 
+  if ('string' != typeof selector) {
+    throw new Error('Wrong selector type');
+  }
+
   // html
   if ('<' == selector.charAt(0)) {
     return new List([domify(selector)[0]], selector);
   }
 
   // selector
-  if ('string' == typeof selector) {
-    return new List(ctx.querySelectorAll(selector), selector);
-  }
+  var ctx = context
+    ? (context.els ? context.els[0] : context)
+    : document;
+
+  return new List(ctx.querySelectorAll(selector), selector);
 }
 
 /**

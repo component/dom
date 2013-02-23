@@ -9,6 +9,7 @@ describe('dom()', function(){
       list = dom('#two', list);
       assert(1 == list.length(), 'expected length of 1');
       assert('bar' == list.get(0).textContent);
+      assert('Hello' == dom('.foo').text())
     })
   })
 
