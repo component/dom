@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>dom - event delegation</title>
+</head>
+<body>
+  <span>Hello</span>
+  <script type="text/javascript" src="../build/build.js"></script>
+  <script>
+    var dom = require('dom');
+
+    dom('span').css({
+      border: '1px solid #eee',
+      width: 200,
+      height: 200,
+      'text-align': 'center',
+      position: 'absolute',
+      top: 50,
+      left: 50
+    });
+  </script>
+</body>
+</html>
