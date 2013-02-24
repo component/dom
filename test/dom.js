@@ -368,15 +368,22 @@ describe('.css()', function(){
   describe('with an object', function(){
     it('should return itself for chaining', function(){
       var list = dom('<em>Hello</em>');
-      assert(list == list.css({display: 'none'}));
+      assert(list == list.css({ display: 'none' }));
     })
 
     it('should apply all given values', function(){
       var list = dom('<em>Hello</em>');
-      list.css({display: 'none', 'font-weight': 'bold'});
+      list.css({ display: 'none', 'font-weight': 'bold' });
 
       assert('none' == list.css('display'));
       assert('bold' == list.css('font-weight'));
+    })
+
+    it('should add "px" to pixel values', function(){
+      var list = dom('<p>Hello</p>');
+      list.css({ top: 5, left: 10 });
+      assert('5px' == list.css('top'));
+      assert('10px' == list.css('left'));
     })
   })
 })

@@ -8,6 +8,7 @@ var domify = require('domify')
   , delegate = require('delegate')
   , events = require('event')
   , type = require('type')
+  , css = require('css')
 
 /**
  * Attributes supported.
@@ -562,30 +563,30 @@ List.prototype.hasClass = function(name){
  */
 
 List.prototype.css = function(prop, val){
-  if (2 == arguments.length) return this.setStyle(prop, val);
+  if (2 == arguments.length) {
+    var obj = {};
+    obj[prop] = val;
+    return this.setStyle(obj);
+  }
 
   if ('object' == type(prop)) {
-    for (var key in prop) {
-      this.setStyle(key, prop[key]);
-    }
-    return this;
+    return this.setStyle(prop);
   }
 
   return this.getStyle(prop);
 };
 
 /**
- * Set CSS `prop` to `val`.
+ * Set CSS `props`.
  *
- * @param {String} prop
- * @param {Mixed} val
+ * @param {Object} props
  * @return {List} self
  * @api private
  */
 
-List.prototype.setStyle = function(prop, val){
+List.prototype.setStyle = function(props){
   for (var i = 0; i < this.els.length; ++i) {
-    this.els[i].style[prop] = val;
+    css(this.els[i], props);
   }
   return this;
 };

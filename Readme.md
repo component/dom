@@ -10,6 +10,7 @@
   - [delegate](http://github.com/component/delegate) for event delegation
   - [event](http://github.com/component/event) for event binding
   - [type](http://github.com/component/type) for type checking
+  - [css](http://github.com/component/css) for style properties
 
 ## Installation
 

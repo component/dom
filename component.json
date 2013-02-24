@@ -11,6 +11,7 @@
     "component/indexof": "*",
     "component/domify": "*",
     "component/classes": "*",
+    "component/css": "*",
     "component/sort": "*"
   },
   "development": {
