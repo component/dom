@@ -253,7 +253,7 @@ describe('.empty()', function(){
   })
 
   it('should empty the element(s)', function(){
-    var list = dom('<div></div>');
+    var list = dom('<div><a href="/meow.html">cute kitty</a></div>');
     assert('' == list.empty().html());
   })
 })
