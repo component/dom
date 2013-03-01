@@ -9,6 +9,7 @@ describe('dom()', function(){
       list = dom('#two', list);
       assert(1 == list.length(), 'expected length of 1');
       assert('bar' == list.get(0).textContent);
+      assert('Hello' == dom('.foo').text())
     })
   })
 
@@ -36,9 +37,9 @@ describe('dom()', function(){
 })
 
 describe('.prepend()', function(){
-  it('should return itself for chaining', function(){
+  it('should return the new list', function(){
     var list = dom('<div></div>');
-    assert(list == list.prepend('<p></p>'));
+    assert(list != list.prepend('<p></p>'));
   })
 
   it('should prepend the element(s)', function(){
@@ -55,9 +56,9 @@ describe('.prepend()', function(){
 })
 
 describe('.append()', function(){
-  it('should return itself for chaining', function(){
+  it('should return the new list', function(){
     var list = dom('<div></div>');
-    assert(list == list.append('<p></p>'));
+    assert(list != list.append('<p></p>'));
   })
 
   it('should append the element(s)', function(){
@@ -70,10 +71,59 @@ describe('.append()', function(){
   })
 })
 
+describe('.appendTo()', function(){
+  it('should return itself for chaining', function(){
+    var list = dom('<p>')
+    var parent = document.createElement('div');
+    assert(list == list.appendTo(parent))
+  })
+
+  it('should append elements to parent', function(){
+    var list = dom('<p>');
+    var p1 = dom('<div>');
+    list.appendTo(p1);
+    assert('<p></p>' == p1.html());
+
+    var p2 = document.createElement('div');
+    list.appendTo(p2);
+    assert('<p></p>' == p2.innerHTML);
+  })
+})
+
 describe('.length()', function(){
   it('should return the number of elements', function(){
     var list = dom('<em>Hello</em>');
     assert(1 == list.length());
+  })
+})
+
+describe('.html()', function(){
+  it('should return an html string', function(){
+    var a = dom('<p>Hello <em>World</em><p>');
+    assert('Hello <em>World</em>' == a.html());
+  })
+})
+
+describe('.html(str)', function(){
+  it('should set inner html', function(){
+    var a = dom('<p>Hello <em>World</em><p>');
+    a.html('<em>whoop</em>');
+    assert('<em>whoop</em>' == a.html());
+  })
+})
+
+describe('.text()', function(){
+  it('should return the text content', function(){
+    var a = dom('<p>Hello <em>World</em><p>');
+    assert('Hello World' == a.text());
+  })
+})
+
+describe('.text(str)', function(){
+  it('should set text content', function(){
+    var a = dom('<p>Hello <em>World></em><p>');
+    a.text('Hello');
+    assert('Hello' == a.text());
   })
 })
 
@@ -91,6 +141,11 @@ describe('.get(i)', function(){
   it('should return the element at i', function(){
     var list = dom('<em>Hello</em>');
     assert('Hello' == list.get(0).textContent);
+  })
+
+  it('should return the first element if index is not specified', function(){
+    var list = dom('<em>Hello</em>');
+    assert('Hello' == list.get().textContent);
   })
 })
 
@@ -128,6 +183,15 @@ describe('.removeClass(name)', function(){
     var list = dom('<em>Hello</em>');
     list.addClass('foo').addClass('bar').removeClass('foo');
     assert('bar' == list.get(0).className);
+  })
+
+  it('should remove with regexp', function(){
+    var list = dom('<em>Hello</em>');
+    list.addClass('foo');
+    list.addClass('bar');
+    list.addClass('baz');
+    list.removeClass(/^b/);
+    assert('foo' == list.get(0).className);
   })
 })
 
@@ -261,9 +325,11 @@ describe('.empty()', function(){
 describe('.attr()', function(){
   describe('with a key and value', function(){
     it('should set the attribute', function(){
-      var list = dom('<a></a>');
-      list.attr('href', '#');
+      var list = dom('<div><a></a><a></a></div>').find('a');
+      var ret = list.attr('href', '#');
+      assert(ret == list);
       assert('#' == list.get(0).getAttribute('href'));
+      assert('#' == list.get(1).getAttribute('href'));
     })
   })
 
@@ -271,6 +337,25 @@ describe('.attr()', function(){
     it('should return the attribute', function(){
       var list = dom('<div id="logo"></div>');
       assert('logo' == list.attr('id'));
+    })
+  })
+})
+
+describe('.prop()', function(){
+  describe('with a key and value', function(){
+    it('should set the property', function(){
+      var list = dom('<div><a href="#"></a><a href="#"></a></div>').find('a');
+      var ret = list.prop('hash', '#foo');
+      assert(ret == list);
+      assert('#foo' == list.get(0).hash);
+      assert('#foo' == list.get(1).hash);
+    })
+  })
+
+  describe('with a key', function(){
+    it('should return the property', function(){
+      var list = dom('<a href="#foo">');
+      assert('#foo' == list.prop('hash'));
     })
   })
 })
@@ -289,6 +374,28 @@ describe('.css()', function(){
       var list = dom('<em>Hello</em>');
       list.css('display', 'none');
       assert('none' == list.css('display'));
+    })
+  })
+
+  describe('with an object', function(){
+    it('should return itself for chaining', function(){
+      var list = dom('<em>Hello</em>');
+      assert(list == list.css({ display: 'none' }));
+    })
+
+    it('should apply all given values', function(){
+      var list = dom('<em>Hello</em>');
+      list.css({ display: 'none', 'font-weight': 'bold' });
+
+      assert('none' == list.css('display'));
+      assert('bold' == list.css('font-weight'));
+    })
+
+    it('should add "px" to pixel values', function(){
+      var list = dom('<p>Hello</p>');
+      list.css({ top: 5, left: 10 });
+      assert('5px' == list.css('top'));
+      assert('10px' == list.css('left'));
     })
   })
 })

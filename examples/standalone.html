@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>dom - standalone</title>
+</head>
+<body>
+  <ul></ul>
+  <script type="text/javascript" src="../dom.js"></script>
+  <script>
+    var n = 0;
+    setInterval(function(){
+      dom('ul')
+      .append('<li></li>')
+      .html('item ' + ++n + ' <a href="#">x</a>');
+    }, 1500);
+
+    dom('ul').on('click', 'a', function(e){
+      dom(e.target.parentNode).remove();
+    });
+  </script>
+</body>
+</html>

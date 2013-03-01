@@ -8,6 +8,7 @@ var domify = require('domify')
   , delegate = require('delegate')
   , events = require('event')
   , type = require('type')
+  , css = require('css')
 
 /**
  * Attributes supported.
@@ -51,10 +52,6 @@ exports.attrs = attrs;
  */
 
 function dom(selector, context) {
-  var ctx = context
-    ? (context.els ? context.els[0] : context)
-    : document.firstChild;
-
   // array
   if (Array.isArray(selector)) {
     return new List(selector);
@@ -70,15 +67,21 @@ function dom(selector, context) {
     return new List([selector]);
   }
 
+  if ('string' != typeof selector) {
+    throw new TypeError('invalid selector');
+  }
+
   // html
   if ('<' == selector.charAt(0)) {
     return new List([domify(selector)[0]], selector);
   }
 
   // selector
-  if ('string' == typeof selector) {
-    return new List(ctx.querySelectorAll(selector), selector);
-  }
+  var ctx = context
+    ? (context.els ? context.els[0] : context)
+    : document;
+
+  return new List(ctx.querySelectorAll(selector), selector);
 }
 
 /**
@@ -103,6 +106,20 @@ function List(els, selector) {
 }
 
 /**
+ * Remove elements from the DOM.
+ *
+ * @api public
+ */
+
+List.prototype.remove = function(){
+  for (var i = 0; i < this.els.length; i++) {
+    var el = this.els[i];
+    var parent = el.parentNode;
+    if (parent) parent.removeChild(el);
+  }
+};
+
+/**
  * Set attribute `name` to `val`, or get attr `name`.
  *
  * @param {String} name
@@ -112,12 +129,32 @@ function List(els, selector) {
  */
 
 List.prototype.attr = function(name, val){
-  if (2 == arguments.length) {
-    this.els[0].setAttribute(name, val);
-    return this;
-  } else {
-    return this.els[0].getAttribute(name);
+  if (1 == arguments.length) {
+    return this.els[0] && this.els[0].getAttribute(name);
   }
+
+  return this.forEach(function(el){
+    el.setAttribute(name, val);
+  });
+};
+
+/**
+ * Set property `name` to `val`, or get property `name`.
+ *
+ * @param {String} name
+ * @param {String} [val]
+ * @return {Object|List} self
+ * @api public
+ */
+
+List.prototype.prop = function(name, val){
+  if (1 == arguments.length) {
+    return this.els[0] && this.els[0][name];
+  }
+
+  return this.forEach(function(el){
+    el[name] = val;
+  });
 };
 
 /**
@@ -139,7 +176,7 @@ List.prototype.clone = function(){
  * Prepend `val`.
  *
  * @param {String|Element|List} val
- * @return {List} self
+ * @return {List} new list
  * @api public
  */
 
@@ -154,14 +191,14 @@ List.prototype.prepend = function(val){
       el.appendChild(val.els[i]);
     }
   }
-  return this;
+  return val;
 };
 
 /**
  * Append `val`.
  *
  * @param {String|Element|List} val
- * @return {List} self
+ * @return {List} new list
  * @api public
  */
 
@@ -172,6 +209,19 @@ List.prototype.append = function(val){
   for (var i = 0; i < val.els.length; ++i) {
     el.appendChild(val.els[i]);
   }
+  return val;
+};
+
+/**
+ * Append self's `el` to `val`
+ *
+ * @param {String|Element|List} val
+ * @return {List} self
+ * @api public
+ */
+
+List.prototype.appendTo = function(val){
+  dom(val).append(this);
   return this;
 };
 
@@ -220,7 +270,7 @@ List.prototype.last = function(){
  */
 
 List.prototype.get = function(i){
-  return this.els[i];
+  return this.els[i || 0];
 };
 
 /**
@@ -237,12 +287,20 @@ List.prototype.length = function(){
 /**
  * Return element text.
  *
- * @return {String}
+ * @param {String} str
+ * @return {String|List}
  * @api public
  */
 
-List.prototype.text = function(){
+List.prototype.text = function(str){
   // TODO: real impl
+  if (1 == arguments.length) {
+    this.forEach(function(el){
+      el.textContent = str;
+    });
+    return this;
+  }
+
   var str = '';
   for (var i = 0; i < this.els.length; ++i) {
     str += this.els[i].textContent;
@@ -253,11 +311,16 @@ List.prototype.text = function(){
 /**
  * Return element html.
  *
- * @return {String}
+ * @return {String} html
  * @api public
  */
 
-List.prototype.html = function(){
+List.prototype.html = function(html){
+  if (1 == arguments.length) {
+    this.forEach(function(el){
+      el.innerHTML = html;
+    });
+  }
   // TODO: real impl
   return this.els[0] && this.els[0].innerHTML;
 };
@@ -410,18 +473,34 @@ List.prototype.addClass = function(name){
 /**
  * Remove the given class `name`.
  *
- * @param {String} name
+ * @param {String|RegExp} name
  * @return {List} self
  * @api public
  */
 
 List.prototype.removeClass = function(name){
   var el;
+
+  if ('regexp' == type(name)) {
+    for (var i = 0; i < this.els.length; ++i) {
+      el = this.els[i];
+      el._classes = el._classes || classes(el);
+      var arr = el._classes.array();
+      for (var j = 0; j < arr.length; j++) {
+        if (name.test(arr[j])) {
+          el._classes.remove(arr[j]);
+        }
+      }
+    }
+    return this;
+  }
+
   for (var i = 0; i < this.els.length; ++i) {
     el = this.els[i];
     el._classes = el._classes || classes(el);
     el._classes.remove(name);
   }
+
   return this;
 };
 
@@ -475,6 +554,7 @@ List.prototype.hasClass = function(name){
 
 /**
  * Set CSS `prop` to `val` or get `prop` value.
+ * Also accepts an object (`prop`: `val`)
  *
  * @param {String} prop
  * @param {Mixed} val
@@ -483,22 +563,30 @@ List.prototype.hasClass = function(name){
  */
 
 List.prototype.css = function(prop, val){
-  if (2 == arguments.length) return this.setStyle(prop, val);
+  if (2 == arguments.length) {
+    var obj = {};
+    obj[prop] = val;
+    return this.setStyle(obj);
+  }
+
+  if ('object' == type(prop)) {
+    return this.setStyle(prop);
+  }
+
   return this.getStyle(prop);
 };
 
 /**
- * Set CSS `prop` to `val`.
+ * Set CSS `props`.
  *
- * @param {String} prop
- * @param {Mixed} val
+ * @param {Object} props
  * @return {List} self
  * @api private
  */
 
-List.prototype.setStyle = function(prop, val){
+List.prototype.setStyle = function(props){
   for (var i = 0; i < this.els.length; ++i) {
-    this.els[i].style[prop] = val;
+    css(this.els[i], props);
   }
   return this;
 };

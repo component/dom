@@ -1,6 +1,6 @@
 {
   "name": "dom",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "DOM traversal, manipulation and events aggregate library",
   "keywords": ["html", "dom", "ui", "jquery"],
   "scripts": ["index.js"],
@@ -10,7 +10,9 @@
     "component/delegate": "*",
     "component/indexof": "*",
     "component/domify": "*",
-    "component/classes": "*"
+    "component/classes": "*",
+    "component/css": "*",
+    "component/sort": "*"
   },
   "development": {
     "component/assert": "*"
