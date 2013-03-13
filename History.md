@@ -1,4 +1,10 @@
 
+0.3.0 / 2013-03-13 
+==================
+
+  * add component/css support. Closes #29
+  * add `dom.js` build target
+
 0.2.0 / 2013-02-23 
 ==================
 
