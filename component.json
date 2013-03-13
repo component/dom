@@ -15,7 +15,8 @@
     "component/sort": "*"
   },
   "development": {
-    "component/assert": "*"
+    "component/assert": "*",
+    "visionmedia/mocha-matrix": "*"
   },
   "license": "MIT"
 }
