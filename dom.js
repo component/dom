@@ -235,6 +235,7 @@ module.exports = function(val){
 
   if (val === null) return 'null';
   if (val === undefined) return 'undefined';
+  if (val && val.nodeType === 1) return 'element';
   if (val === Object(val)) return 'object';
 
   return typeof val;
@@ -256,7 +257,7 @@ require.register("component-event/index.js", function(exports, require, module){
 
 exports.bind = function(el, type, fn, capture){
   if (el.addEventListener) {
-    el.addEventListener(type, fn, capture);
+    el.addEventListener(type, fn, capture || false);
   } else {
     el.attachEvent('on' + type, fn);
   }
@@ -276,7 +277,7 @@ exports.bind = function(el, type, fn, capture){
 
 exports.unbind = function(el, type, fn, capture){
   if (el.removeEventListener) {
-    el.removeEventListener(type, fn, capture);
+    el.removeEventListener(type, fn, capture || false);
   } else {
     el.detachEvent('on' + type, fn);
   }
@@ -631,6 +632,43 @@ ClassList.prototype.contains = function(name){
 };
 
 });
+require.register("component-css/index.js", function(exports, require, module){
+
+/**
+ * Properties to ignore appending "px".
+ */
+
+var ignore = {
+  columnCount: true,
+  fillOpacity: true,
+  fontWeight: true,
+  lineHeight: true,
+  opacity: true,
+  orphans: true,
+  widows: true,
+  zIndex: true,
+  zoom: true
+};
+
+/**
+ * Set `el` css values.
+ *
+ * @param {Element} el
+ * @param {Object} obj
+ * @return {Element}
+ * @api public
+ */
+
+module.exports = function(el, obj){
+  for (var key in obj) {
+    var val = obj[key];
+    if ('number' == typeof val && !ignore[key]) val += 'px';
+    el.style[key] = val;
+  }
+  return el;
+};
+
+});
 require.register("component-sort/index.js", function(exports, require, module){
 
 /**
@@ -649,10 +687,11 @@ exports = module.exports = sort;
 
 function sort(el, fn) {
   var arr = [].slice.call(el.children).sort(fn);
-  el.innerHTML = '';
+  var frag = document.createDocumentFragment();
   for (var i = 0; i < arr.length; i++) {
-    el.appendChild(arr[i]);
+    frag.appendChild(arr[i]);
   }
+  el.appendChild(frag);
 };
 
 /**
@@ -669,6 +708,12 @@ exports.desc = function(el, fn){
   });
 };
 
+/**
+ * Sort ascending.
+ */
+
+exports.asc = sort;
+
 });
 require.register("dom/index.js", function(exports, require, module){
 /**
@@ -681,6 +726,7 @@ var domify = require('domify')
   , delegate = require('delegate')
   , events = require('event')
   , type = require('type')
+  , css = require('css')
 
 /**
  * Attributes supported.
@@ -1235,30 +1281,30 @@ List.prototype.hasClass = function(name){
  */
 
 List.prototype.css = function(prop, val){
-  if (2 == arguments.length) return this.setStyle(prop, val);
+  if (2 == arguments.length) {
+    var obj = {};
+    obj[prop] = val;
+    return this.setStyle(obj);
+  }
 
   if ('object' == type(prop)) {
-    for (var key in prop) {
-      this.setStyle(key, prop[key]);
-    }
-    return this;
+    return this.setStyle(prop);
   }
 
   return this.getStyle(prop);
 };
 
 /**
- * Set CSS `prop` to `val`.
+ * Set CSS `props`.
  *
- * @param {String} prop
- * @param {Mixed} val
+ * @param {Object} props
  * @return {List} self
  * @api private
  */
 
-List.prototype.setStyle = function(prop, val){
+List.prototype.setStyle = function(props){
   for (var i = 0; i < this.els.length; ++i) {
-    this.els[i].style[prop] = val;
+    css(this.els[i], props);
   }
   return this;
 };
@@ -1326,6 +1372,8 @@ require.alias("component-domify/index.js", "dom/deps/domify/index.js");
 
 require.alias("component-classes/index.js", "dom/deps/classes/index.js");
 require.alias("component-indexof/index.js", "component-classes/deps/indexof/index.js");
+
+require.alias("component-css/index.js", "dom/deps/css/index.js");
 
 require.alias("component-sort/index.js", "dom/deps/sort/index.js");
 
