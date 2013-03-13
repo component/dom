@@ -259,6 +259,15 @@ dom('ul li').each(function(li, i){
 });
 ```
 
+### .empty()
+
+  Empties the elements.
+
+```js
+var list = dom('<div><a href="/meow.html">cute kitty</a></div>');
+assert('' == list.empty().html());
+```
+
 ### .forEach(fn)
 
   Iterate elements passing each one, and its index:
