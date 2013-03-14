@@ -715,6 +715,30 @@ exports.desc = function(el, fn){
 exports.asc = sort;
 
 });
+require.register("component-query/index.js", function(exports, require, module){
+
+function one(selector, el) {
+  return el.querySelector(selector);
+}
+
+exports = module.exports = function(selector, el){
+  el = el || document;
+  return one(selector, el);
+};
+
+exports.all = function(selector, el){
+  el = el || document;
+  return el.querySelectorAll(selector);
+};
+
+exports.engine = function(obj){
+  if (!obj.one) throw new Error('.one callback required');
+  if (!obj.all) throw new Error('.all callback required');
+  one = obj.one;
+  exports.all = obj.all;
+};
+
+});
 require.register("dom/index.js", function(exports, require, module){
 /**
  * Module dependencies.
@@ -725,6 +749,7 @@ var domify = require('domify')
   , indexof = require('indexof')
   , delegate = require('delegate')
   , events = require('event')
+  , query = require('query')
   , type = require('type')
   , css = require('css')
 
@@ -799,7 +824,7 @@ function dom(selector, context) {
     ? (context.els ? context.els[0] : context)
     : document;
 
-  return new List(ctx.querySelectorAll(selector), selector);
+  return new List(query.all(selector, ctx), selector);
 }
 
 /**
@@ -1331,18 +1356,28 @@ List.prototype.getStyle = function(prop){
  */
 
 List.prototype.find = function(selector){
-  // TODO: real implementation
-  var list = new List([], this.selector);
-  var el, els;
+  return dom(selector, this);
+};
+
+/**
+ * Empty the dom list
+ *
+ * @return self
+ * @api public
+ */
+
+List.prototype.empty = function(){
+  var elem, el;
+
   for (var i = 0; i < this.els.length; ++i) {
     el = this.els[i];
-    els = el.querySelectorAll(selector);
-    for (var j = 0; j < els.length; ++j) {
-      list.els.push(els[j]);
+    while (el.firstChild) {
+      el.removeChild(el.firstChild);
     }
   }
-  return list;
-};
+
+  return this;
+}
 
 /**
  * Attribute accessors.
@@ -1376,6 +1411,8 @@ require.alias("component-indexof/index.js", "component-classes/deps/indexof/inde
 require.alias("component-css/index.js", "dom/deps/css/index.js");
 
 require.alias("component-sort/index.js", "dom/deps/sort/index.js");
+
+require.alias("component-query/index.js", "dom/deps/query/index.js");
 
 if (typeof exports == "object") {
   module.exports = require("dom");
