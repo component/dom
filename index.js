@@ -614,17 +614,7 @@ List.prototype.getStyle = function(prop){
  */
 
 List.prototype.find = function(selector){
-  // TODO: real implementation
-  var list = new List([], this.selector);
-  var el, els;
-  for (var i = 0; i < this.els.length; ++i) {
-    el = this.els[i];
-    els = query.all(selector, el);
-    for (var j = 0; j < els.length; ++j) {
-      list.els.push(els[j]);
-    }
-  }
-  return list;
+  return dom(selector, this);
 };
 
 /**
