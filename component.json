@@ -2,8 +2,15 @@
   "name": "dom",
   "version": "0.3.0",
   "description": "DOM traversal, manipulation and events aggregate library",
-  "keywords": ["html", "dom", "ui", "jquery"],
-  "scripts": ["index.js"],
+  "keywords": [
+    "html",
+    "dom",
+    "ui",
+    "jquery"
+  ],
+  "scripts": [
+    "index.js"
+  ],
   "dependencies": {
     "component/type": "*",
     "component/event": "*",
@@ -12,7 +19,8 @@
     "component/domify": "*",
     "component/classes": "*",
     "component/css": "*",
-    "component/sort": "*"
+    "component/sort": "*",
+    "component/query": "*"
   },
   "development": {
     "component/assert": "*",
