@@ -359,6 +359,8 @@ dom('ul li').last().remove();
   This lib will not include _any_ XHR support, js animations, promises, or anything
   else out of scope. This library is for DOM manipulation, traversal, and events only.
 
+  This library is _not_ aiming for feature parity with jQuery.
+
 ## License
 
   MIT
