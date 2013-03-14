@@ -7,6 +7,7 @@ var domify = require('domify')
   , indexof = require('indexof')
   , delegate = require('delegate')
   , events = require('event')
+  , query = require('query')
   , type = require('type')
   , css = require('css')
 
@@ -81,7 +82,7 @@ function dom(selector, context) {
     ? (context.els ? context.els[0] : context)
     : document;
 
-  return new List(ctx.querySelectorAll(selector), selector);
+  return new List(query.all(selector, ctx), selector);
 }
 
 /**
@@ -613,17 +614,7 @@ List.prototype.getStyle = function(prop){
  */
 
 List.prototype.find = function(selector){
-  // TODO: real implementation
-  var list = new List([], this.selector);
-  var el, els;
-  for (var i = 0; i < this.els.length; ++i) {
-    el = this.els[i];
-    els = el.querySelectorAll(selector);
-    for (var j = 0; j < els.length; ++j) {
-      list.els.push(els[j]);
-    }
-  }
-  return list;
+  return dom(selector, this);
 };
 
 /**
