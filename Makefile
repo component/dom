@@ -6,7 +6,7 @@ components:
 	@component install --dev
 
 clean:
-	rm -fr build components dom.js
+	rm -fr build components dom*.js dom*.gz
 
 test:
 	@mocha-phantomjs -R dot test/index.html
@@ -14,4 +14,16 @@ test:
 dom.js: index.js components
 	@component build --standalone dom --out . --name dom
 
-.PHONY: clean test
+dom.js.gz: dom.js
+	@gzip --stdout $< > $@
+
+dom.min.js: dom.js
+	@uglifyjs $< > $@
+
+dom.min.js.gz: dom.min.js
+	@gzip --stdout $< > $@
+
+stats: dom.js dom.min.js dom.js.gz dom.min.js.gz
+	@du -h $^
+
+.PHONY: clean test stats
