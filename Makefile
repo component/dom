@@ -6,7 +6,7 @@ components:
 	@component install --dev
 
 clean:
-	rm -fr build components dom*.js dom*.gz
+	rm -fr build components dom.*.js dom*.gz
 
 test:
 	@mocha-phantomjs -R dot test/index.html
