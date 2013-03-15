@@ -15,13 +15,13 @@ dom.js: index.js components
 	@component build --standalone dom --out . --name dom
 
 dom.js.gz: dom.js
-	@gzip --stdout $< > $@
+	@zopfli -c $< > $@
 
 dom.min.js: dom.js
 	@uglifyjs $< > $@
 
 dom.min.js.gz: dom.min.js
-	@gzip --stdout $< > $@
+	@zopfli -c $< > $@
 
 stats: dom.js dom.min.js dom.js.gz dom.min.js.gz
 	@du -h $^
