@@ -2,14 +2,15 @@
  * Module dependencies.
  */
 
-var domify = require('domify')
-  , classes = require('classes')
-  , indexof = require('indexof')
-  , delegate = require('delegate')
-  , events = require('event')
-  , query = require('query')
-  , type = require('type')
-  , css = require('css')
+var delegate = require('delegate');
+var classes = require('classes');
+var indexof = require('indexof');
+var domify = require('domify');
+var events = require('event');
+var value = require('value');
+var query = require('query');
+var type = require('type');
+var css = require('css');
 
 /**
  * Attributes supported.
@@ -155,6 +156,28 @@ List.prototype.prop = function(name, val){
 
   return this.forEach(function(el){
     el[name] = val;
+  });
+};
+
+/**
+ * Get the first element's value or set selected
+ * element values to `val`.
+ *
+ * @param {Mixed} [val]
+ * @return {Mixed}
+ * @api public
+ */
+
+List.prototype.val =
+List.prototype.value = function(val){
+  if (0 == arguments.length) {
+    return this.els[0]
+      ? value(this.els[0])
+      : undefined;
+  }
+
+  return this.forEach(function(el){
+    value(el, val);
   });
 };
 
