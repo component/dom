@@ -6,9 +6,12 @@
   the combined functionality of:
 
   - [domify](http://github.com/component/domify) to convert HTML to DOM nodes
+  - [query](http://github.com/component/query) for selector engine integration
   - [classes](http://github.com/component/classes) to add, remove, and toggle classes
   - [delegate](http://github.com/component/delegate) for event delegation
   - [event](http://github.com/component/event) for event binding
+  - [value](http://github.com/component/value) for form field values
+  - [sort](http://github.com/component/sort) for sorting elements
   - [type](http://github.com/component/type) for type checking
   - [css](http://github.com/component/css) for style properties
 
