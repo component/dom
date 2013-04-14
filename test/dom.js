@@ -36,6 +36,29 @@ describe('dom()', function(){
   })
 })
 
+describe('.val()', function(){
+  it('should be an alias of .value()', function(){
+    var list = dom('<input>');
+    assert(list.val == list.value);
+  })
+})
+
+describe('.value()', function(){
+  it('should get values', function(){
+    var list = dom('<input type="text" value="tobi">');
+    assert('tobi' == list.value());
+  })
+})
+
+describe('.value(obj)', function(){
+  it('should set values', function(){
+    var list = dom('<input type="text">');
+    assert('' == list.value());
+    list.value('hello');
+    assert('hello' == list.value());
+  })
+})
+
 describe('.prepend()', function(){
   it('should return the new list', function(){
     var list = dom('<div></div>');
