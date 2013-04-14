@@ -1,12 +1,5 @@
 ;(function(){
 
-
-/**
- * hasOwnProperty.
- */
-
-var has = Object.prototype.hasOwnProperty;
-
 /**
  * Require the given path.
  *
@@ -83,10 +76,10 @@ require.resolve = function(path) {
 
   for (var i = 0; i < paths.length; i++) {
     var path = paths[i];
-    if (has.call(require.modules, path)) return path;
+    if (require.modules.hasOwnProperty(path)) return path;
   }
 
-  if (has.call(require.aliases, index)) {
+  if (require.aliases.hasOwnProperty(index)) {
     return require.aliases[index];
   }
 };
@@ -140,7 +133,7 @@ require.register = function(path, definition) {
  */
 
 require.alias = function(from, to) {
-  if (!has.call(require.modules, from)) {
+  if (!require.modules.hasOwnProperty(from)) {
     throw new Error('Failed to alias "' + from + '", it does not exist');
   }
   require.aliases[to] = from;
@@ -202,7 +195,7 @@ require.relative = function(parent) {
    */
 
   localRequire.exists = function(path) {
-    return has.call(require.modules, localRequire.resolve(path));
+    return require.modules.hasOwnProperty(localRequire.resolve(path));
   };
 
   return localRequire;
@@ -715,6 +708,71 @@ exports.desc = function(el, fn){
 exports.asc = sort;
 
 });
+require.register("component-value/index.js", function(exports, require, module){
+
+/**
+ * Set or get `el`'s' value.
+ *
+ * @param {Element} el
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api public
+ */
+
+module.exports = function(el, val){
+  if (2 == arguments.length) return set(el, val);
+  return get(el);
+};
+
+/**
+ * Get `el`'s value.
+ */
+
+function get(el) {
+  switch (type(el)) {
+    case 'checkbox':
+      return el.getAttribute('checked') == 'checked'
+        ? null == el.getAttribute('value')
+          ? true
+          : el.getAttribute('value')
+        : false;
+    default:
+      return el.value;
+  }
+}
+
+/**
+ * Set `el`'s value.
+ */
+
+function set(el, val) {
+  switch (type(el)) {
+    case 'checkbox':
+      if (val) {
+        el.setAttribute('checked', 'checked');
+      } else {
+        el.removeAttribute('checked');
+      }
+      break;
+    case 'input':
+      el.setAttribute('value', val);
+      break;
+    default:
+      el.value = val;
+  }
+}
+
+/**
+ * Element type.
+ */
+
+function type(el) {
+  var name = el.nodeName.toLowerCase();
+  if ('input' == name && 'checkbox' == el.getAttribute('type')) return 'checkbox';
+  return name.toLowerCase();
+}
+
+});
 require.register("component-query/index.js", function(exports, require, module){
 
 function one(selector, el) {
@@ -744,14 +802,15 @@ require.register("dom/index.js", function(exports, require, module){
  * Module dependencies.
  */
 
-var domify = require('domify')
-  , classes = require('classes')
-  , indexof = require('indexof')
-  , delegate = require('delegate')
-  , events = require('event')
-  , query = require('query')
-  , type = require('type')
-  , css = require('css')
+var delegate = require('delegate');
+var classes = require('classes');
+var indexof = require('indexof');
+var domify = require('domify');
+var events = require('event');
+var value = require('value');
+var query = require('query');
+var type = require('type');
+var css = require('css');
 
 /**
  * Attributes supported.
@@ -897,6 +956,28 @@ List.prototype.prop = function(name, val){
 
   return this.forEach(function(el){
     el[name] = val;
+  });
+};
+
+/**
+ * Get the first element's value or set selected
+ * element values to `val`.
+ *
+ * @param {Mixed} [val]
+ * @return {Mixed}
+ * @api public
+ */
+
+List.prototype.val =
+List.prototype.value = function(val){
+  if (0 == arguments.length) {
+    return this.els[0]
+      ? value(this.els[0])
+      : undefined;
+  }
+
+  return this.forEach(function(el){
+    value(el, val);
   });
 };
 
@@ -1412,6 +1493,10 @@ require.alias("component-css/index.js", "dom/deps/css/index.js");
 
 require.alias("component-sort/index.js", "dom/deps/sort/index.js");
 
+require.alias("component-value/index.js", "dom/deps/value/index.js");
+require.alias("component-value/index.js", "dom/deps/value/index.js");
+require.alias("component-value/index.js", "component-value/index.js");
+
 require.alias("component-query/index.js", "dom/deps/query/index.js");
 
 if (typeof exports == "object") {
@@ -1419,5 +1504,5 @@ if (typeof exports == "object") {
 } else if (typeof define == "function" && define.amd) {
   define(function(){ return require("dom"); });
 } else {
-  window["dom"] = require("dom");
+  this["dom"] = require("dom");
 }})();
