@@ -25,6 +25,7 @@
   },
   "development": {
     "component/assert": "*",
+    "component/enumerable": "*",
     "visionmedia/mocha-matrix": "*"
   },
   "license": "MIT"

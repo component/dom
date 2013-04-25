@@ -108,6 +108,18 @@ function List(els, selector) {
 }
 
 /**
+ * Enumerable iterator.
+ */
+
+List.prototype.__iterate__ = function(){
+  var self = this;
+  return {
+    length: function(){ return self.els.length },
+    get: function(i){ return new List([self.els[i]]) }
+  }
+};
+
+/**
  * Remove elements from the DOM.
  *
  * @api public
