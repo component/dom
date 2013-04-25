@@ -359,6 +359,22 @@ dom('ul li').last().remove();
 
   Return a `List` containing the `i`th element.
 
+## Enumerable
+
+  This library supports [component/enumerable](http://github.com/component/enumerable), for example:
+
+```js
+
+var _ = require('enumerable')
+var dom = require('dom')
+
+var ul = '<ul><li>Tobi</li><li>Loki</li><li>Jane</li></ul>';
+var list = dom(ul);
+
+var name = _(list.find('li')).map('text()').first();
+assert('Tobi' == name)
+```
+
 ## Notes
 
   It is recommended that you do _not_ depend on this library directly
