@@ -143,12 +143,33 @@ List.prototype.remove = function(){
  */
 
 List.prototype.attr = function(name, val){
+  // get
   if (1 == arguments.length) {
     return this.els[0] && this.els[0].getAttribute(name);
   }
 
+  // remove
+  if (null == val) {
+    return this.removeAttr(name);
+  }
+
+  // set
   return this.forEach(function(el){
     el.setAttribute(name, val);
+  });
+};
+
+/**
+ * Remove attribute `name`.
+ *
+ * @param {String} name
+ * @return {List} self
+ * @api public
+ */
+
+List.prototype.removeAttr = function(name){
+  return this.forEach(function(el){
+    el.removeAttribute(name);
   });
 };
 

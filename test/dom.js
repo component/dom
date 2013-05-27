@@ -345,7 +345,23 @@ describe('.empty()', function(){
   })
 })
 
+describe('.removeAttr(name)', function(){
+  it('should remove an attribute', function(){
+    var list = dom('<div><a href="/something"></a></div>').find('a');
+    list.removeAttr('href');
+    assert(null == list.get(0).getAttribute('href'));
+  })
+})
+
 describe('.attr()', function(){
+  describe('with null', function(){
+    it('should remove the attribute', function(){
+      var list = dom('<div><a href="/something"></a></div>').find('a');
+      list.attr('href', null);
+      assert(null == list.get(0).getAttribute('href'));
+    })
+  })
+
   describe('with a key and value', function(){
     it('should set the attribute', function(){
       var list = dom('<div><a></a><a></a></div>').find('a');
