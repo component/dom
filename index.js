@@ -510,6 +510,25 @@ List.prototype.filter = function(fn){
 };
 
 /**
+ * Filter elements invoking `fn(list, i)`, returning
+ * a new `List` of elements when a falsey value is returned.
+ *
+ * @param {Function} fn
+ * @return {List}
+ * @api public
+ */
+
+List.prototype.reject = function(fn){
+  var el;
+  var list = new List([], this.selector);
+  for (var i = 0; i < this.els.length; ++i) {
+    el = this.els[i];
+    if (!fn(new List([el], this.selector), i)) list.els.push(el);
+  }
+  return list;
+};
+
+/**
  * Add the given class `name`.
  *
  * @param {String} name

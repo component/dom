@@ -1,5 +1,5 @@
 
-var assert = require('assert')
+var assert = require('component-assert')
   , dom = require('dom')
 
 describe('dom()', function(){
@@ -330,6 +330,19 @@ describe('.select(fn)', function(){
 describe('.filter(fn)', function(){
   it('should alias .select', function(){
     assert(dom.List.prototype.filter == dom.List.prototype.select);
+  })
+})
+
+describe('.reject(fn)', function(){
+  it('should reject passing (list, i)', function(){
+    var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
+
+    var selected = list.reject(function(el){
+      return el.text() == 'bar';
+    });
+
+    assert(1 == selected.length(), 'invalid length');
+    assert(selected.get(0) == list.get(0));
   })
 })
 

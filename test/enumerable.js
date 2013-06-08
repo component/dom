@@ -1,6 +1,6 @@
 
-var assert = require('assert')
-  , _ = require('enumerable')
+var assert = require('component-assert')
+  , _ = require('component-enumerable')
   , dom = require('dom')
 
 describe('List', function(){

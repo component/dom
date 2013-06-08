@@ -311,6 +311,17 @@ var pending = dom('ul li').select(function(li){
 });
 ```
 
+### .reject(fn)
+
+  Reject elements with the given function, passing each element
+  as a list.
+
+```js
+var pending = dom('ul li').reject(function(li){
+  return li.hasClass('pending');
+});
+```
+
 ### .first()
 
   Return a `List` containing the first element:
