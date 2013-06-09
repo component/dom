@@ -1,5 +1,5 @@
 
-var assert = require('component-assert')
+var assert = require('assert')
   , dom = require('dom')
 
 describe('dom()', function(){
