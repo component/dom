@@ -333,6 +333,19 @@ describe('.filter(fn)', function(){
   })
 })
 
+describe('.reject(fn)', function(){
+  it('should reject passing (list, i)', function(){
+    var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
+
+    var selected = list.reject(function(el){
+      return el.text() == 'bar';
+    });
+
+    assert(1 == selected.length(), 'invalid length');
+    assert(selected.get(0) == list.get(0));
+  })
+})
+
 describe('.empty()', function(){
   it('should return itself for chaining', function(){
     var list = dom('<div></div>');
