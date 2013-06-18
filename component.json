@@ -12,16 +12,16 @@
     "index.js"
   ],
   "dependencies": {
-    "component/type": "*",
-    "component/event": "*",
-    "component/delegate": "*",
-    "component/indexof": "*",
-    "component/domify": "*",
-    "component/classes": "*",
-    "component/css": "*",
-    "component/sort": "*",
-    "component/value": "*",
-    "component/query": "*"
+    "component/type": "1.0.0",
+    "component/event": "0.1.0",
+    "component/delegate": "0.1.0",
+    "component/indexof": "0.0.1",
+    "component/domify": "1.0.0",
+    "component/classes": "1.1.2",
+    "component/css": "0.0.2",
+    "component/sort": "0.0.3",
+    "component/value": "1.1.0",
+    "component/query": "0.0.1"
   },
   "development": {
     "component/assert": "*",
