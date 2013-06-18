@@ -75,7 +75,7 @@ function dom(selector, context) {
 
   // html
   if ('<' == selector.charAt(0)) {
-    return new List([domify(selector)[0]], selector);
+    return new List([domify(selector)], selector);
   }
 
   // selector
