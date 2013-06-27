@@ -22,6 +22,7 @@ var attrs = [
   'rel',
   'cols',
   'rows',
+  'type',
   'name',
   'href',
   'title',
