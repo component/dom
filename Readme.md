@@ -88,6 +88,15 @@ dom('ul')
   .addClass('user');
 ```
 
+### .insertAfter(list)
+
+  Insert after:
+
+```js
+dom('<div></div>')
+  .insertAfter('body');
+```
+
 ### .on(event, fn, [capture])
 
   Bind `event` handler function:

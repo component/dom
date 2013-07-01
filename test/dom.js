@@ -1,6 +1,7 @@
 
 var assert = require('assert')
   , dom = require('dom')
+  , domify = require('domify')
 
 describe('dom()', function(){
   describe('with a selector', function(){
@@ -91,6 +92,22 @@ describe('.append()', function(){
 
     list.append(dom('<p>Two</p>'));
     assert('<p>One</p><p>Two</p>' == list.html());
+  })
+})
+
+describe('.insertAfter()', function(){
+  it('should return itself for chaining', function(){
+    var list = dom('<div></div>');
+    assert(list == list.insertAfter('<p></p>'));
+  })
+
+  it('should insert the element(s)', function(){
+    var container = dom('<div></div>')
+      , one = domify('<p>One</p>');
+    container.append(one);
+    dom('<p>Two</p>').insertAfter(one);
+
+    assert('<p>One</p><p>Two</p>' == container.html());
   })
 })
 
