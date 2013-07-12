@@ -469,6 +469,90 @@ describe('.css()', function(){
   })
 })
 
+describe('.is()', function(){
+  it('should return true if matches', function(){
+    assert(dom('<p></p>').is('p'));
+  })
+
+  it('should return false otherwise', function(){
+    assert(false == dom('<p></p>').is('span'));
+  })
+})
+
+describe('.parent()', function(){
+  describe('there is a parent', function(){
+    it('should return a new List with the parent', function(){
+      assert(dom('<p><i></i></p>').find('i').parent().is('p'));
+    })
+  })
+
+  describe('there is no parent', function(){
+    it('should return null', function(){
+      assert(null == dom('<p></p>').parent());
+    })
+  })
+})
+
+describe('.parents()', function(){
+  describe('without arguments', function(){
+    it('should return all parents', function(){
+      assert(2 == dom('<p><em><i>baz</i></em></p>').find('i').parents().els.length);
+    })
+  })
+
+  describe('with selector', function(){
+    it('should retrun all matching elements', function(){
+      assert(1 == dom('<p><em><i></i></em></p>').find('i').parents('p').els.length)
+    })
+  })
+
+  describe('with limit', function(){
+    it('should return all parents within limit', function(){
+      assert(1 == dom('<p><em><i></i></em></p>').find('i').parents('*', 1).els.length);
+    })
+  })
+})
+
+describe('.next()', function(){
+  describe('without arguments', function(){
+    it('should return the next element', function(){
+      assert(dom('<p></p><i></i><em></em>').find('p').next().is('i'));
+    })
+  })
+
+  describe('with selector', function(){
+    it('should return the next element matching selector', function(){
+      assert(dom('<p></p><i></i><em></em>').find('p').next('em').is('em'));
+    })
+  })
+
+  describe('with limit', function(){
+    it('should return all elements within limit', function(){
+      assert(2 == dom('<p></p><i></i><em></em>').find('p').next(null, Infinity).els.length);
+    })
+  })
+})
+
+describe('.previous()', function(){
+  describe('without arguments', function(){
+    it('should return the previous element', function(){
+      assert(dom('<p></p><i></i><em></em>').find('em').previous().is('i'));
+    })
+  })
+
+  describe('with selector', function(){
+    it('should return the previous element matching selector', function(){
+      assert(dom('<p></p><i></i><em></em>').find('em').previous('p').is('p'));
+    })
+  })
+
+  describe('with limit', function(){
+    it('should return all elements within limit', function(){
+      assert(2 == dom('<p></p><i></i><em></em>').find('em').previous(null, Infinity).els.length);
+    })
+  })
+})
+
 dom.attrs.forEach(function(name){
   describe('.' + name + '()', function(){
     it('should return the attribute value', function(){
