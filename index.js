@@ -801,6 +801,7 @@ List.prototype.next = function(selector, limit){
  * @api public
  */
 
+List.prototype.prev =
 List.prototype.previous = function(selector, limit){
   return new List(traverse('previousSibling',
     this.get(0),

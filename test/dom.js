@@ -553,6 +553,13 @@ describe('.previous()', function(){
   })
 })
 
+describe('.prev()', function(){
+  it('should alias .previous()', function(){
+    var proto = dom.List.prototype;
+    assert(proto.prev == proto.previous);
+  })
+})
+
 dom.attrs.forEach(function(name){
   describe('.' + name + '()', function(){
     it('should return the attribute value', function(){
