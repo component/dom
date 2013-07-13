@@ -745,21 +745,7 @@ List.prototype.is = function(selector){
 };
 
 /**
- * Get the first element `parent`.
- *
- * @return {List}
- * @api public
- */
-
-List.prototype.parent = function(){
-  var parent = this.get(0).parentNode;
-  return parent && 11 != parent.nodeType
-    ? new List([parent])
-    : null;
-};
-
-/**
- * Get all parents with optional `selector` and `limit`.
+ * Get parent(s) with optional `selector` and `limit`
  *
  * @param {String} selector
  * @param {Number} limit
@@ -767,16 +753,16 @@ List.prototype.parent = function(){
  * @api public
  */
 
-List.prototype.parents = function(selector, limit){
+List.prototype.parent = function(selector, limit){
   return new List(traverse('parentNode',
     this.get(0),
     selector,
     limit
-    || Infinity));
+    || 1));
 };
 
 /**
- * Get next element with optional `selector` and `limit`.
+ * Get next element(s) with optional `selector` and `limit`.
  *
  * @param {String} selector
  * @param {Number} limit
@@ -793,7 +779,7 @@ List.prototype.next = function(selector, limit){
 };
 
 /**
- * Get the previous element with optional `selector` and `limit`.
+ * Get previous element(s) with optional `selector` and `limit`.
  *
  * @param {String} selector
  * @param {Number} limit

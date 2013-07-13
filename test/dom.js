@@ -480,35 +480,21 @@ describe('.is()', function(){
 })
 
 describe('.parent()', function(){
-  describe('there is a parent', function(){
-    it('should return a new List with the parent', function(){
-      assert(dom('<p><i></i></p>').find('i').parent().is('p'));
-    })
-  })
-
-  describe('there is no parent', function(){
-    it('should return null', function(){
-      assert(null == dom('<p></p>').parent());
-    })
-  })
-})
-
-describe('.parents()', function(){
   describe('without arguments', function(){
-    it('should return all parents', function(){
-      assert(2 == dom('<p><em><i>baz</i></em></p>').find('i').parents().els.length);
+    it('should return a single parent', function(){
+      assert(1 == dom('<p><em><i>baz</i></em></p>').find('i').parent().els.length);
     })
   })
 
   describe('with selector', function(){
     it('should retrun all matching elements', function(){
-      assert(1 == dom('<p><em><i></i></em></p>').find('i').parents('p').els.length)
+      assert(1 == dom('<p><em><i></i></em></p>').find('i').parent('p').els.length)
     })
   })
 
   describe('with limit', function(){
-    it('should return all parents within limit', function(){
-      assert(1 == dom('<p><em><i></i></em></p>').find('i').parents('*', 1).els.length);
+    it('should return all parent within limit', function(){
+      assert(2 == dom('<p><em><i></i></em></p>').find('i').parent('*', Infinity).els.length);
     })
   })
 })
