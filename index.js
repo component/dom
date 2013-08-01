@@ -29,6 +29,8 @@ var attrs = [
   'style',
   'width',
   'height',
+  'action',
+  'method',
   'tabindex',
   'placeholder'
 ];
