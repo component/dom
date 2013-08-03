@@ -1,4 +1,14 @@
 
+0.9.0 / 2013-08-03 
+==================
+
+ * add "action" and "method" to attr shorthand methods
+ * add `.parent([selector])`
+ * add `.parents([selector])`
+ * add `.next([selector])`
+ * add `.prev([selector]])`
+ * add `.is(selector)` 
+
 0.8.0 / 2013-07-01 
 ==================
 
