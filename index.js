@@ -2,8 +2,10 @@
  * Module dependencies.
  */
 
+var matches = require('matches-selector');
 var delegate = require('delegate');
 var classes = require('classes');
+var traverse = require('traverse');
 var indexof = require('indexof');
 var domify = require('domify');
 var events = require('event');
@@ -731,6 +733,70 @@ List.prototype.empty = function(){
 
   return this;
 }
+
+/**
+ * Check if the first element matches `selector`.
+ *
+ * @param {String} selector
+ * @return {Boolean}
+ * @api public
+ */
+
+List.prototype.is = function(selector){
+  return matches(this.get(0), selector);
+};
+
+/**
+ * Get parent(s) with optional `selector` and `limit`
+ *
+ * @param {String} selector
+ * @param {Number} limit
+ * @return {List}
+ * @api public
+ */
+
+List.prototype.parent = function(selector, limit){
+  return new List(traverse('parentNode',
+    this.get(0),
+    selector,
+    limit
+    || 1));
+};
+
+/**
+ * Get next element(s) with optional `selector` and `limit`.
+ *
+ * @param {String} selector
+ * @param {Number} limit
+ * @retrun {List}
+ * @api public
+ */
+
+List.prototype.next = function(selector, limit){
+  return new List(traverse('nextSibling',
+    this.get(0),
+    selector,
+    limit
+    || 1));
+};
+
+/**
+ * Get previous element(s) with optional `selector` and `limit`.
+ *
+ * @param {String} selector
+ * @param {Number} limit
+ * @return {List}
+ * @api public
+ */
+
+List.prototype.prev =
+List.prototype.previous = function(selector, limit){
+  return new List(traverse('previousSibling',
+    this.get(0),
+    selector,
+    limit
+    || 1));
+};
 
 /**
  * Attribute accessors.

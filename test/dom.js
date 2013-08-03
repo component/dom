@@ -469,6 +469,83 @@ describe('.css()', function(){
   })
 })
 
+describe('.is()', function(){
+  it('should return true if matches', function(){
+    assert(dom('<p></p>').is('p'));
+  })
+
+  it('should return false otherwise', function(){
+    assert(false == dom('<p></p>').is('span'));
+  })
+})
+
+describe('.parent()', function(){
+  describe('without arguments', function(){
+    it('should return a single parent', function(){
+      assert(1 == dom('<p><em><i>baz</i></em></p>').find('i').parent().els.length);
+    })
+  })
+
+  describe('with selector', function(){
+    it('should retrun all matching elements', function(){
+      assert(1 == dom('<p><em><i></i></em></p>').find('i').parent('p').els.length)
+    })
+  })
+
+  describe('with limit', function(){
+    it('should return all parent within limit', function(){
+      assert(2 == dom('<p><em><i></i></em></p>').find('i').parent('*', Infinity).els.length);
+    })
+  })
+})
+
+describe('.next()', function(){
+  describe('without arguments', function(){
+    it('should return the next element', function(){
+      assert(dom('<p></p><i></i><em></em>').find('p').next().is('i'));
+    })
+  })
+
+  describe('with selector', function(){
+    it('should return the next element matching selector', function(){
+      assert(dom('<p></p><i></i><em></em>').find('p').next('em').is('em'));
+    })
+  })
+
+  describe('with limit', function(){
+    it('should return all elements within limit', function(){
+      assert(2 == dom('<p></p><i></i><em></em>').find('p').next(null, Infinity).els.length);
+    })
+  })
+})
+
+describe('.previous()', function(){
+  describe('without arguments', function(){
+    it('should return the previous element', function(){
+      assert(dom('<p></p><i></i><em></em>').find('em').previous().is('i'));
+    })
+  })
+
+  describe('with selector', function(){
+    it('should return the previous element matching selector', function(){
+      assert(dom('<p></p><i></i><em></em>').find('em').previous('p').is('p'));
+    })
+  })
+
+  describe('with limit', function(){
+    it('should return all elements within limit', function(){
+      assert(2 == dom('<p></p><i></i><em></em>').find('em').previous(null, Infinity).els.length);
+    })
+  })
+})
+
+describe('.prev()', function(){
+  it('should alias .previous()', function(){
+    var proto = dom.List.prototype;
+    assert(proto.prev == proto.previous);
+  })
+})
+
 dom.attrs.forEach(function(name){
   describe('.' + name + '()', function(){
     it('should return the attribute value', function(){
