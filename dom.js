@@ -64,7 +64,6 @@ require.aliases = {};
 
 require.resolve = function(path) {
   if (path.charAt(0) === '/') path = path.slice(1);
-  var index = path + '/index.js';
 
   var paths = [
     path,
@@ -77,10 +76,7 @@ require.resolve = function(path) {
   for (var i = 0; i < paths.length; i++) {
     var path = paths[i];
     if (require.modules.hasOwnProperty(path)) return path;
-  }
-
-  if (require.aliases.hasOwnProperty(index)) {
-    return require.aliases[index];
+    if (require.aliases.hasOwnProperty(path)) return require.aliases[path];
   }
 };
 
@@ -278,48 +274,6 @@ exports.unbind = function(el, type, fn, capture){
 };
 
 });
-require.register("component-matches-selector/index.js", function(exports, require, module){
-
-/**
- * Element prototype.
- */
-
-var proto = Element.prototype;
-
-/**
- * Vendor function.
- */
-
-var vendor = proto.matchesSelector
-  || proto.webkitMatchesSelector
-  || proto.mozMatchesSelector
-  || proto.msMatchesSelector
-  || proto.oMatchesSelector;
-
-/**
- * Expose `match()`.
- */
-
-module.exports = match;
-
-/**
- * Match `el` to `selector`.
- *
- * @param {Element} el
- * @param {String} selector
- * @return {Boolean}
- * @api public
- */
-
-function match(el, selector) {
-  if (vendor) return vendor.call(el, selector);
-  var nodes = el.parentNode.querySelectorAll(selector);
-  for (var i = 0; i < nodes.length; ++i) {
-    if (nodes[i] == el) return true;
-  }
-  return false;
-}
-});
 require.register("component-delegate/index.js", function(exports, require, module){
 
 /**
@@ -345,8 +299,9 @@ var matches = require('matches-selector')
 
 exports.bind = function(el, selector, type, fn, capture){
   return event.bind(el, type, function(e){
-    if (matches(e.target, selector)) fn.call(el, e);
+    if (matches(e.target, selector)) fn(e);
   }, capture);
+  return callback;
 };
 
 /**
@@ -365,11 +320,8 @@ exports.unbind = function(el, type, fn, capture){
 
 });
 require.register("component-indexof/index.js", function(exports, require, module){
-
-var indexOf = [].indexOf;
-
 module.exports = function(arr, obj){
-  if (indexOf) return arr.indexOf(obj);
+  if (arr.indexOf) return arr.indexOf(obj);
   for (var i = 0; i < arr.length; ++i) {
     if (arr[i] === obj) return i;
   }
@@ -414,19 +366,19 @@ var map = {
 
 function parse(html) {
   if ('string' != typeof html) throw new TypeError('String expected');
-  
+
   // tag name
   var m = /<([\w:]+)/.exec(html);
   if (!m) throw new Error('No elements were generated.');
   var tag = m[1];
-  
+
   // body support
   if (tag == 'body') {
     var el = document.createElement('html');
     el.innerHTML = html;
-    return [el.removeChild(el.lastChild)];
+    return el.removeChild(el.lastChild);
   }
-  
+
   // wrap map
   var wrap = map[tag] || map._default;
   var depth = wrap[0];
@@ -436,25 +388,17 @@ function parse(html) {
   el.innerHTML = prefix + html + suffix;
   while (depth--) el = el.lastChild;
 
-  return orphan(el.children);
-}
-
-/**
- * Orphan `els` and return an array.
- *
- * @param {NodeList} els
- * @return {Array}
- * @api private
- */
-
-function orphan(els) {
-  var ret = [];
-
-  while (els.length) {
-    ret.push(els[0].parentNode.removeChild(els[0]));
+  var els = el.children;
+  if (1 == els.length) {
+    return el.removeChild(els[0]);
   }
 
-  return ret;
+  var fragment = document.createDocumentFragment();
+  while (els.length) {
+    fragment.appendChild(el.removeChild(els[0]));
+  }
+
+  return fragment;
 }
 
 });
@@ -604,8 +548,9 @@ ClassList.prototype.toggle = function(name){
  */
 
 ClassList.prototype.array = function(){
-  var arr = this.el.className.split(re);
-  if ('' === arr[0]) arr.pop();
+  var str = this.el.className.replace(/^\s+|\s+$/g, '');
+  var arr = str.split(re);
+  if ('' === arr[0]) arr.shift();
   return arr;
 };
 
@@ -711,6 +656,12 @@ exports.asc = sort;
 require.register("component-value/index.js", function(exports, require, module){
 
 /**
+ * Module dependencies.
+ */
+
+var typeOf = require('type');
+
+/**
  * Set or get `el`'s' value.
  *
  * @param {Element} el
@@ -731,11 +682,23 @@ module.exports = function(el, val){
 function get(el) {
   switch (type(el)) {
     case 'checkbox':
-      return el.getAttribute('checked') == 'checked'
-        ? null == el.getAttribute('value')
-          ? true
-          : el.getAttribute('value')
-        : false;
+    case 'radio':
+      if (el.checked) {
+        var attr = el.getAttribute('value');
+        return null == attr ? true : attr;
+      } else {
+        return false;
+      }
+    case 'radiogroup':
+      for (var i = 0, radio; radio = el[i]; i++) {
+        if (radio.checked) return radio.value;
+      }
+      break;
+    case 'select':
+      for (var i = 0, option; option = el.options[i]; i++) {
+        if (option.selected) return option.value;
+      }
+      break;
     default:
       return el.value;
   }
@@ -748,14 +711,22 @@ function get(el) {
 function set(el, val) {
   switch (type(el)) {
     case 'checkbox':
+    case 'radio':
       if (val) {
-        el.setAttribute('checked', 'checked');
+        el.checked = true;
       } else {
-        el.removeAttribute('checked');
+        el.checked = false;
       }
       break;
-    case 'input':
-      el.setAttribute('value', val);
+    case 'radiogroup':
+      for (var i = 0, radio; radio = el[i]; i++) {
+        radio.checked = radio.value === val;
+      }
+      break;
+    case 'select':
+      for (var i = 0, option; option = el.options[i]; i++) {
+        option.selected = option.value === val;
+      }
       break;
     default:
       el.value = val;
@@ -767,9 +738,16 @@ function set(el, val) {
  */
 
 function type(el) {
+  var group = 'array' == typeOf(el) || 'object' == typeOf(el);
+  if (group) el = el[0];
   var name = el.nodeName.toLowerCase();
-  if ('input' == name && 'checkbox' == el.getAttribute('type')) return 'checkbox';
-  return name.toLowerCase();
+  var type = el.getAttribute('type');
+
+  if (group && type && 'radio' == type.toLowerCase()) return 'radiogroup';
+  if ('input' == name && type && 'checkbox' == type.toLowerCase()) return 'checkbox';
+  if ('input' == name && type && 'radio' == type.toLowerCase()) return 'radio';
+  if ('select' == name) return 'select';
+  return name;
 }
 
 });
@@ -797,13 +775,100 @@ exports.engine = function(obj){
 };
 
 });
+require.register("component-matches-selector/index.js", function(exports, require, module){
+/**
+ * Module dependencies.
+ */
+
+var query = require('query');
+
+/**
+ * Element prototype.
+ */
+
+var proto = Element.prototype;
+
+/**
+ * Vendor function.
+ */
+
+var vendor = proto.matchesSelector
+  || proto.webkitMatchesSelector
+  || proto.mozMatchesSelector
+  || proto.msMatchesSelector
+  || proto.oMatchesSelector;
+
+/**
+ * Expose `match()`.
+ */
+
+module.exports = match;
+
+/**
+ * Match `el` to `selector`.
+ *
+ * @param {Element} el
+ * @param {String} selector
+ * @return {Boolean}
+ * @api public
+ */
+
+function match(el, selector) {
+  if (vendor) return vendor.call(el, selector);
+  var nodes = query.all(selector, el.parentNode);
+  for (var i = 0; i < nodes.length; ++i) {
+    if (nodes[i] == el) return true;
+  }
+  return false;
+}
+
+});
+require.register("yields-traverse/index.js", function(exports, require, module){
+
+/**
+ * dependencies
+ */
+
+var matches = require('matches-selector');
+
+/**
+ * Traverse with the given `el`, `selector` and `len`.
+ *
+ * @param {String} type
+ * @param {Element} el
+ * @param {String} selector
+ * @param {Number} len
+ * @return {Array}
+ * @api public
+ */
+
+module.exports = function(type, el, selector, len){
+  var el = el[type]
+    , n = len || 1
+    , ret = [];
+
+  if (!el) return ret;
+
+  do {
+    if (n == ret.length) break;
+    if (1 != el.nodeType) continue;
+    if (matches(el, selector)) ret.push(el);
+    if (!selector) ret.push(el);
+  } while (el = el[type]);
+
+  return ret;
+}
+
+});
 require.register("dom/index.js", function(exports, require, module){
 /**
  * Module dependencies.
  */
 
+var matches = require('matches-selector');
 var delegate = require('delegate');
 var classes = require('classes');
+var traverse = require('traverse');
 var indexof = require('indexof');
 var domify = require('domify');
 var events = require('event');
@@ -822,12 +887,15 @@ var attrs = [
   'rel',
   'cols',
   'rows',
+  'type',
   'name',
   'href',
   'title',
   'style',
   'width',
   'height',
+  'action',
+  'method',
   'tabindex',
   'placeholder'
 ];
@@ -875,7 +943,7 @@ function dom(selector, context) {
 
   // html
   if ('<' == selector.charAt(0)) {
-    return new List([domify(selector)[0]], selector);
+    return new List([domify(selector)], selector);
   }
 
   // selector
@@ -908,6 +976,18 @@ function List(els, selector) {
 }
 
 /**
+ * Enumerable iterator.
+ */
+
+List.prototype.__iterate__ = function(){
+  var self = this;
+  return {
+    length: function(){ return self.els.length },
+    get: function(i){ return new List([self.els[i]]) }
+  }
+};
+
+/**
  * Remove elements from the DOM.
  *
  * @api public
@@ -931,12 +1011,33 @@ List.prototype.remove = function(){
  */
 
 List.prototype.attr = function(name, val){
+  // get
   if (1 == arguments.length) {
     return this.els[0] && this.els[0].getAttribute(name);
   }
 
+  // remove
+  if (null == val) {
+    return this.removeAttr(name);
+  }
+
+  // set
   return this.forEach(function(el){
     el.setAttribute(name, val);
+  });
+};
+
+/**
+ * Remove attribute `name`.
+ *
+ * @param {String} name
+ * @return {List} self
+ * @api public
+ */
+
+List.prototype.removeAttr = function(name){
+  return this.forEach(function(el){
+    el.removeAttribute(name);
   });
 };
 
@@ -1046,6 +1147,23 @@ List.prototype.append = function(val){
 
 List.prototype.appendTo = function(val){
   dom(val).append(this);
+  return this;
+};
+
+/**
+ * Insert self's `els` after `val`
+ *
+ * @param {String|Element|List} val
+ * @return {List} self
+ * @api public
+ */
+
+List.prototype.insertAfter = function(val){
+  val = dom(val).els[0];
+  if (!val || !val.parentNode) return this;
+  this.els.forEach(function(el){
+    val.parentNode.insertBefore(el, val.nextSibling);
+  });
   return this;
 };
 
@@ -1277,6 +1395,25 @@ List.prototype.filter = function(fn){
 };
 
 /**
+ * Filter elements invoking `fn(list, i)`, returning
+ * a new `List` of elements when a falsey value is returned.
+ *
+ * @param {Function} fn
+ * @return {List}
+ * @api public
+ */
+
+List.prototype.reject = function(fn){
+  var el;
+  var list = new List([], this.selector);
+  for (var i = 0; i < this.els.length; ++i) {
+    el = this.els[i];
+    if (!fn(new List([el], this.selector), i)) list.els.push(el);
+  }
+  return list;
+};
+
+/**
  * Add the given class `name`.
  *
  * @param {String} name
@@ -1461,6 +1598,70 @@ List.prototype.empty = function(){
 }
 
 /**
+ * Check if the first element matches `selector`.
+ *
+ * @param {String} selector
+ * @return {Boolean}
+ * @api public
+ */
+
+List.prototype.is = function(selector){
+  return matches(this.get(0), selector);
+};
+
+/**
+ * Get parent(s) with optional `selector` and `limit`
+ *
+ * @param {String} selector
+ * @param {Number} limit
+ * @return {List}
+ * @api public
+ */
+
+List.prototype.parent = function(selector, limit){
+  return new List(traverse('parentNode',
+    this.get(0),
+    selector,
+    limit
+    || 1));
+};
+
+/**
+ * Get next element(s) with optional `selector` and `limit`.
+ *
+ * @param {String} selector
+ * @param {Number} limit
+ * @retrun {List}
+ * @api public
+ */
+
+List.prototype.next = function(selector, limit){
+  return new List(traverse('nextSibling',
+    this.get(0),
+    selector,
+    limit
+    || 1));
+};
+
+/**
+ * Get previous element(s) with optional `selector` and `limit`.
+ *
+ * @param {String} selector
+ * @param {Number} limit
+ * @return {List}
+ * @api public
+ */
+
+List.prototype.prev =
+List.prototype.previous = function(selector, limit){
+  return new List(traverse('previousSibling',
+    this.get(0),
+    selector,
+    limit
+    || 1));
+};
+
+/**
  * Attribute accessors.
  */
 
@@ -1473,33 +1674,67 @@ attrs.forEach(function(name){
 
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
 require.alias("component-type/index.js", "dom/deps/type/index.js");
+require.alias("component-type/index.js", "type/index.js");
 
 require.alias("component-event/index.js", "dom/deps/event/index.js");
+require.alias("component-event/index.js", "event/index.js");
 
 require.alias("component-delegate/index.js", "dom/deps/delegate/index.js");
+require.alias("component-delegate/index.js", "delegate/index.js");
 require.alias("component-matches-selector/index.js", "component-delegate/deps/matches-selector/index.js");
+require.alias("component-query/index.js", "component-matches-selector/deps/query/index.js");
 
 require.alias("component-event/index.js", "component-delegate/deps/event/index.js");
 
 require.alias("component-indexof/index.js", "dom/deps/indexof/index.js");
+require.alias("component-indexof/index.js", "indexof/index.js");
 
 require.alias("component-domify/index.js", "dom/deps/domify/index.js");
+require.alias("component-domify/index.js", "domify/index.js");
 
 require.alias("component-classes/index.js", "dom/deps/classes/index.js");
+require.alias("component-classes/index.js", "classes/index.js");
 require.alias("component-indexof/index.js", "component-classes/deps/indexof/index.js");
 
 require.alias("component-css/index.js", "dom/deps/css/index.js");
+require.alias("component-css/index.js", "css/index.js");
 
 require.alias("component-sort/index.js", "dom/deps/sort/index.js");
+require.alias("component-sort/index.js", "sort/index.js");
 
 require.alias("component-value/index.js", "dom/deps/value/index.js");
 require.alias("component-value/index.js", "dom/deps/value/index.js");
+require.alias("component-value/index.js", "value/index.js");
+require.alias("component-type/index.js", "component-value/deps/type/index.js");
+
 require.alias("component-value/index.js", "component-value/index.js");
-
 require.alias("component-query/index.js", "dom/deps/query/index.js");
+require.alias("component-query/index.js", "query/index.js");
 
-if (typeof exports == "object") {
+require.alias("component-matches-selector/index.js", "dom/deps/matches-selector/index.js");
+require.alias("component-matches-selector/index.js", "matches-selector/index.js");
+require.alias("component-query/index.js", "component-matches-selector/deps/query/index.js");
+
+require.alias("yields-traverse/index.js", "dom/deps/traverse/index.js");
+require.alias("yields-traverse/index.js", "dom/deps/traverse/index.js");
+require.alias("yields-traverse/index.js", "traverse/index.js");
+require.alias("component-matches-selector/index.js", "yields-traverse/deps/matches-selector/index.js");
+require.alias("component-query/index.js", "component-matches-selector/deps/query/index.js");
+
+require.alias("yields-traverse/index.js", "yields-traverse/index.js");if (typeof exports == "object") {
   module.exports = require("dom");
 } else if (typeof define == "function" && define.amd) {
   define(function(){ return require("dom"); });
