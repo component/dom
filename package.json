@@ -4,6 +4,9 @@
   "repository": "component/dom",
   "description": "DOM traversal, manipulation and events aggregate library",
   "license": "MIT",
+  "dependencies": {
+    "mocha": "*"  
+  },
   "testling": {
     "harness": "mocha",
     "scripts": [
