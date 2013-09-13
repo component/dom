@@ -1,0 +1,15 @@
+{
+  "name": "dom-component",
+  "version": "0.9.0",
+  "repository": "component/dom",
+  "description": "DOM traversal, manipulation and events aggregate library",
+  "license": "MIT",
+  "testling": {
+    "harness": "mocha",
+    "scripts": [
+      "dom.js",
+      "test/*.js"
+    ],
+    "browsers": ["chrome/22"]
+  }
+}
