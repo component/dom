@@ -1,7 +1,7 @@
 
 var assert = require('assert')
-  , dom = require('dom')
   , domify = require('domify')
+  , dom = require('dom')
 
 describe('dom()', function(){
   describe('with a selector', function(){
