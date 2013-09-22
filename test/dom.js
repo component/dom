@@ -21,6 +21,14 @@ describe('dom()', function(){
     })
   })
 
+  describe('with dirty html', function(){
+    it('should return a list', function(){
+      var list = dom(' \
+            <em>Hello</em>');
+      assert('Hello' == list.get(0).textContent);
+    })
+  })
+
   describe('with a List', function(){
     it('should return the same list', function(){
       var list = dom('<p>Hello</p>');

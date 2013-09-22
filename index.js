@@ -79,8 +79,9 @@ function dom(selector, context) {
   }
 
   // html
-  if ('<' == selector.charAt(0)) {
-    return new List([domify(selector)], selector);
+  var htmlselector = selector.trim();
+  if ('<' == htmlselector.charAt(0)) {
+    return new List([domify(htmlselector)], htmlselector);
   }
 
   // selector
