@@ -487,8 +487,10 @@ describe('.parent()', function(){
   })
 
   describe('with selector', function(){
-    it('should retrun all matching elements', function(){
-      assert(1 == dom('<p><em><i></i></em></p>').find('i').parent('p').els.length)
+    it('should return all matching elements', function(){
+      var parent = dom('<p><em><i></i></em></p>').find('i').parent('p');
+      assert(1 == parent.els.length);
+      assert('<em><i></i></em>' == parent.els[0].innerHTML);
     })
   })
 
