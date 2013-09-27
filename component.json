@@ -23,12 +23,14 @@
     "component/value": "1.1.0",
     "component/query": "0.0.1",
     "component/matches-selector": "*",
-    "yields/traverse": "*"
+    "yields/traverse": "*",
+    "component/trim": "*"
   },
   "development": {
     "component/assert": "*",
     "component/enumerable": "*",
     "visionmedia/mocha-matrix": "*"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "remotes": []
 }
