@@ -12,6 +12,7 @@ var events = require('event');
 var value = require('value');
 var query = require('query');
 var type = require('type');
+var trim = require('trim');
 var css = require('css');
 
 /**
@@ -79,7 +80,7 @@ function dom(selector, context) {
   }
 
   // html
-  var htmlselector = selector.trim();
+  var htmlselector = trim.left(selector);
   if ('<' == htmlselector.charAt(0)) {
     return new List([domify(htmlselector)], htmlselector);
   }

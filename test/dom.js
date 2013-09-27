@@ -22,10 +22,15 @@ describe('dom()', function(){
   })
 
   describe('with dirty html', function(){
-    it('should return a list', function(){
+    it('should remove whitespace from the left', function(){
       var list = dom(' \
             <em>Hello</em>');
       assert('Hello' == list.get(0).textContent);
+    })
+    
+    it('should not clean the right', function(){
+      var list = dom('  <em>Hello  ');
+      assert('Hello  ' == list.get(0).textContent);
     })
   })
 
