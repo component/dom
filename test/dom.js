@@ -21,6 +21,19 @@ describe('dom()', function(){
     })
   })
 
+  describe('with dirty html', function(){
+    it('should remove whitespace from the left', function(){
+      var list = dom(' \
+            <em>Hello</em>');
+      assert('Hello' == list.get(0).textContent);
+    })
+    
+    it('should not clean the right', function(){
+      var list = dom('  <em>Hello  ');
+      assert('Hello  ' == list.get(0).textContent);
+    })
+  })
+
   describe('with a List', function(){
     it('should return the same list', function(){
       var list = dom('<p>Hello</p>');
@@ -139,7 +152,7 @@ describe('.length()', function(){
 
 describe('.html()', function(){
   it('should return an html string', function(){
-    var a = dom('<p>Hello <em>World</em><p>');
+    var a = dom('<p>Hello <em>World</em></p>');
     assert('Hello <em>World</em>' == a.html());
   })
 })
@@ -487,8 +500,10 @@ describe('.parent()', function(){
   })
 
   describe('with selector', function(){
-    it('should retrun all matching elements', function(){
-      assert(1 == dom('<p><em><i></i></em></p>').find('i').parent('p').els.length)
+    it('should return all matching elements', function(){
+      var parent = dom('<p><em><i></i></em></p>').find('i').parent('p');
+      assert(1 == parent.els.length);
+      assert('<em><i></i></em>' == parent.els[0].innerHTML);
     })
   })
 
