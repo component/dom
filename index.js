@@ -396,10 +396,11 @@ List.prototype.text = function(str){
 
 List.prototype.html = function(html){
   if (1 == arguments.length) {
-    this.forEach(function(el){
+    return this.forEach(function(el){
       el.innerHTML = html;
     });
   }
+
   // TODO: real impl
   return this.els[0] && this.els[0].innerHTML;
 };
