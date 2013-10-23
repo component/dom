@@ -27,7 +27,7 @@ describe('dom()', function(){
             <em>Hello</em>');
       assert('Hello' == list.get(0).textContent);
     })
-    
+
     it('should not clean the right', function(){
       var list = dom('  <em>Hello  ');
       assert('Hello  ' == list.get(0).textContent);
@@ -121,6 +121,25 @@ describe('.insertAfter()', function(){
     dom('<p>Two</p>').insertAfter(one);
 
     assert('<p>One</p><p>Two</p>' == container.html());
+  })
+})
+
+describe('.replace()', function(){
+  it('should return the new element for chaining', function(){
+    var container = dom('<div></div>')
+      , one = dom('<p>One</p>')
+      , two = dom('<p>Two</p>');
+    container.append(one);
+    assert(two == dom(one).replace(two));
+  })
+
+  it('should replace the element', function(){
+    var container = dom('<div></div>')
+      , one = dom('<p>One</p>')
+      , two = dom('<p>Two</p>');
+    container.append(one);
+    dom(one).replace(two);
+    assert('<p>Two</p>' == container.html());
   })
 })
 
