@@ -97,6 +97,16 @@ dom('<div></div>')
   .insertAfter('body');
 ```
 
+### .replace(list)
+  
+  Replace:
+
+```js
+dom('.placeholder')
+  .replace('<div>Tobi</div>')
+  .addClass('tobi');
+```
+
 ### .on(event, fn, [capture])
 
   Bind `event` handler function:
