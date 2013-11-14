@@ -2,13 +2,16 @@
 build: index.js components
 	@component build --dev
 
-components:
+components: component.json
 	@component install --dev
 
 clean:
-	rm -fr build components dom.*.js dom*.gz
+	@rm -fr build components dom.*.js dom*.gz
 
-test:
+node_modules: package.json
+	@npm install
+
+test: node_modules build
 	@mocha-phantomjs -R dot test/index.html
 
 dom.js: index.js components

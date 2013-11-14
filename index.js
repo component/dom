@@ -307,6 +307,26 @@ List.prototype.insertAfter = function(val){
 };
 
 /**
+ * Replace elements in the DOM.
+ *
+ * @param {String|Element|List} val
+ * @return {List} new list
+ * @api public
+ */
+
+List.prototype.replace = function(val){
+  val = dom(val);
+  var el = val.els[0];
+  if (!el) return;
+  for (var i = 0; i < this.els.length; i++) {
+    var old = this.els[i];
+    var parent = old.parentNode;
+    if (parent) parent.replaceChild(el.cloneNode(true), old);
+  }
+  return val;
+};
+
+/**
  * Return a `List` containing the element at `i`.
  *
  * @param {Number} i
