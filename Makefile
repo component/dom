@@ -11,8 +11,11 @@ clean:
 node_modules: package.json
 	@npm install
 
+test-browser: node_modules build
+	@./node_modules/.bin/component-test browser
+
 test: node_modules build
-	@mocha-phantomjs -R dot test/index.html
+	@./node_modules/.bin/component-test phantom
 
 dom.js: index.js components
 	@component build --standalone dom --out . --name dom
@@ -29,4 +32,4 @@ dom.min.js.gz: dom.min.js
 stats: dom.js dom.min.js dom.js.gz dom.min.js.gz
 	@du -h $^
 
-.PHONY: clean test stats
+.PHONY: build clean test stats

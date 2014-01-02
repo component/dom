@@ -5,7 +5,7 @@
   "description": "DOM traversal, manipulation and events aggregate library",
   "license": "MIT",
   "dependencies": {
-    "mocha": "*"  
+    "component-test2": "*"
   },
   "testling": {
     "harness": "mocha",
