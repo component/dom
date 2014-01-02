@@ -589,3 +589,30 @@ dom.attrs.forEach(function(name) {
     })
   })
 })
+
+describe('dom.use()', function() {
+  it('should extend functions', function() {
+    var get = function(i) { return this[i]; }
+    dom.use('get', get);
+    assert('P' == dom('<p></p>').get(0).nodeName);
+    assert('DIV' == dom('<div></div>').get(0).nodeName);
+  });
+
+  it('should work with function names', function() {
+    function get(i) { return this[i]; }
+    dom.use(get);
+    assert('P' == dom('<p></p>').get(0).nodeName);
+    assert('DIV' == dom('<div></div>').get(0).nodeName);
+  });
+
+  it('should work with objects', function() {
+    var obj = {};
+    obj.get = function(i) { return this[i]; }
+    obj.hi = function() { return 'hello' }
+    dom.use(obj);
+    assert('P' == dom('<p></p>').get(0).nodeName);
+    assert('DIV' == dom('<div></div>').get(0).nodeName);
+    assert('hello' == dom('<p></p>').hi());
+    assert('hello' == dom('<div></div>').hi());
+  });
+})

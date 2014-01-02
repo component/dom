@@ -402,6 +402,31 @@ dom('ul li').last().remove();
 
   Return a cloned list of cloned nodes.
 
+## .use([name], fn|obj)
+
+Similar to jQuery, you can extend dom to support plugins:
+
+```js
+var get = function(i) { return this[i]; }
+dom.use('get', get);
+```
+
+Using the function's name:
+
+```js
+function get(i) { return this[i]; }
+dom.use(get);
+```
+
+Passing an object through:
+
+```js
+var obj = {};
+obj.get = function(i) { return this[i]; }
+obj.draggable = function() { ... }
+dom.use(obj);
+```
+
 ## Notes
 
   It is recommended that you do _not_ depend on this library directly

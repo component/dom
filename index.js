@@ -101,6 +101,43 @@ dom.List = List;
 dom.attrs = attrs;
 
 /**
+ * Static: Mixin a function
+ *
+ * @param {Object|String} name
+ * @param {Object|Function} obj
+ * @return {List} self
+ */
+
+dom.use = function(name, fn) {
+  var keys = [];
+  var tmp;
+
+  if (2 == arguments.length) {
+    keys.push(name);
+    tmp = {};
+    tmp[name] = fn;
+    fn = tmp;
+  } else if (name.name) {
+    // use function name
+    fn = name;
+    name = name.name;
+    keys.push(name);
+    tmp = {};
+    tmp[name] = fn;
+    fn = tmp;
+  } else {
+    keys = Object.keys(name);
+    fn = name;
+  }
+
+  for(var i = 0, len = keys.length; i < len; i++) {
+    List.prototype[keys[i]] = fn[keys[i]];
+  }
+
+  return this;
+}
+
+/**
  * Initialize a new `List` with the
  * given array-ish of `els` and `selector`
  * string.
@@ -145,23 +182,6 @@ List.prototype.toArray = function() {
 }
 
 /**
- * Static: Mixin a function
- *
- * @param {Object|Function} obj
- * @return {List} self
- */
-
-List.use = function(fn) {
-  var keys = ('function' == typeof fn) ? [fn] : Object.keys(fn);
-
-  for(var i = 0, len = keys.length; i < len; i++) {
-    List.prototype[keys[i]] = fn[keys[i]];
-  }
-
-  return this;
-}
-
-/**
  * Attribute accessors.
  */
 
@@ -176,11 +196,11 @@ attrs.forEach(function(name){
  * Mixin the API
  */
 
-List.use(require('./lib/attributes'));
-List.use(require('./lib/classes'));
-List.use(require('./lib/events'));
-List.use(require('./lib/manipulate'));
-List.use(require('./lib/traverse'));
+dom.use(require('./lib/attributes'));
+dom.use(require('./lib/classes'));
+dom.use(require('./lib/events'));
+dom.use(require('./lib/manipulate'));
+dom.use(require('./lib/traverse'));
 
 /**
  * Check if the string is HTML
