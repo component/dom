@@ -9,27 +9,29 @@
     "jquery"
   ],
   "scripts": [
-    "index.js"
+    "index.js",
+    "lib/traverse.js",
+    "lib/manipulate.js",
+    "lib/classes.js",
+    "lib/attributes.js",
+    "lib/events.js"
   ],
   "dependencies": {
-    "component/type": "1.0.0",
-    "component/event": "0.1.0",
+    "component/event": "0.1.2",
     "component/delegate": "0.1.0",
-    "component/indexof": "0.0.1",
     "component/domify": "1.0.0",
     "component/classes": "1.1.2",
-    "component/css": "0.0.2",
-    "component/sort": "0.0.3",
+    "component/css": "0.0.3",
     "component/value": "1.1.0",
     "component/query": "0.0.1",
-    "component/matches-selector": "*",
-    "yields/traverse": "*",
-    "component/trim": "*"
+    "component/matches-selector": "0.1.1",
+    "yields/traverse": "0.1.1",
+    "component/trim": "0.0.1",
+    "yields/isArray": "1.0.0",
+    "component/to-function": "getter/fns"
   },
   "development": {
-    "component/assert": "*",
-    "component/enumerable": "*",
-    "visionmedia/mocha-matrix": "*"
+    "component/assert": "*"
   },
   "license": "MIT",
   "remotes": []

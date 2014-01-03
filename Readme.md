@@ -11,9 +11,7 @@
   - [delegate](http://github.com/component/delegate) for event delegation
   - [event](http://github.com/component/event) for event binding
   - [value](http://github.com/component/value) for form field values
-  - [sort](http://github.com/component/sort) for sorting elements
-  - [type](http://github.com/component/type) for type checking
-  - [css](http://github.com/component/css) for style properties
+  - [css](http://github.com/matthewmueller/css) for style properties
 
 ## Installation
 
@@ -48,7 +46,7 @@ dom('li').select(function(el){
 
 ## API
 
-  All occurrances of `list` refer to:
+  All occurrances of `List` refer to:
 
   - an element passed
   - a string of html
@@ -98,7 +96,7 @@ dom('<div></div>')
 ```
 
 ### .replace(list)
-  
+
   Replace:
 
 ```js
@@ -288,6 +286,18 @@ dom('ul li').each(function(li, i){
 });
 ```
 
+### .forEach(fn)
+
+  Iterate elements passing each one, and its index:
+
+```js
+dom('ul li').forEach(function(li, i){
+  if (li.className == 'complete') {
+    li.parentNode.removeChild(li);
+  }
+});
+```
+
 ### .empty()
 
   Empties the elements.
@@ -314,9 +324,15 @@ dom('ul li').forEach(function(li, i){
   Return an array with map `fn`, passing each element as a list:
 
 ```js
-var hrefs = dom('a').forEach(function(a){
+var hrefs = dom('a').map(function(a){
   return a.attr('href');
 });
+```
+
+Or with a string:
+
+```js
+var types = dom('input').map('type');
 ```
 
 ### .select(fn)
@@ -330,15 +346,35 @@ var pending = dom('ul li').select(function(li){
 });
 ```
 
+Or with a string:
+
+```js
+var imgs = dom('img').select('src');
+```
+
 ### .reject(fn)
 
   Reject elements with the given function, passing each element
   as a list.
 
 ```js
-var pending = dom('ul li').reject(function(li){
+var active = dom('ul li').reject(function(li){
   return li.hasClass('pending');
 });
+```
+
+Or with a string:
+
+```js
+var active = dom('input').reject('disabled');
+```
+
+### .at(i)
+
+  Return a `List` containing the `i`th element.
+
+```js
+dom('ul li').at(1).remove();
 ```
 
 ### .first()
@@ -356,10 +392,6 @@ dom('ul li').first().remove();
 ```js
 dom('ul li').last().remove();
 ```
-
-### .length()
-
-  Return the number of elements in the list.
 
 ### .html()
 
@@ -381,28 +413,29 @@ dom('ul li').last().remove();
 
   Return a cloned list of cloned nodes.
 
-### .get(i)
+## .use([name], fn|obj)
 
-  Return the `i`th element.
-
-### .at(i)
-
-  Return a `List` containing the `i`th element.
-
-## Enumerable
-
-  This library supports [component/enumerable](http://github.com/component/enumerable), for example:
+Similar to jQuery, you can extend dom to support plugins:
 
 ```js
+var get = function(i) { return this[i]; }
+dom.use('get', get);
+```
 
-var _ = require('enumerable')
-var dom = require('dom')
+Using the function's name:
 
-var ul = '<ul><li>Tobi</li><li>Loki</li><li>Jane</li></ul>';
-var list = dom(ul);
+```js
+function get(i) { return this[i]; }
+dom.use(get);
+```
 
-var name = _(list.find('li')).map('text()').first();
-assert('Tobi' == name)
+Passing an object through:
+
+```js
+var obj = {};
+obj.get = function(i) { return this[i]; }
+obj.draggable = function() { ... }
+dom.use(obj);
 ```
 
 ## Notes

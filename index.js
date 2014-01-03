@@ -2,18 +2,12 @@
  * Module dependencies.
  */
 
-var matches = require('matches-selector');
-var delegate = require('delegate');
-var classes = require('classes');
-var traverse = require('traverse');
-var indexof = require('indexof');
+var isArray = require('isArray');
 var domify = require('domify');
 var events = require('event');
-var value = require('value');
 var query = require('query');
-var type = require('type');
 var trim = require('trim');
-var css = require('css');
+var slice = [].slice;
 
 /**
  * Attributes supported.
@@ -38,30 +32,31 @@ var attrs = [
   'placeholder'
 ];
 
+/*
+ * A simple way to check for HTML strings or ID strings
+ */
+
+var quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/;
+
 /**
  * Expose `dom()`.
  */
 
-exports = module.exports = dom;
-
-/**
- * Expose supported attrs.
- */
-
-exports.attrs = attrs;
+module.exports = dom;
 
 /**
  * Return a dom `List` for the given
  * `html`, selector, or element.
  *
- * @param {String|Element|List}
+ * @param {String|Element|List} selector
+ * @param {String|ELement|context} context
  * @return {List}
  * @api public
  */
 
 function dom(selector, context) {
   // array
-  if (Array.isArray(selector)) {
+  if (isArray(selector)) {
     return new List(selector);
   }
 
@@ -81,23 +76,66 @@ function dom(selector, context) {
 
   // html
   var htmlselector = trim.left(selector);
-  if ('<' == htmlselector.charAt(0)) {
+  if (isHTML(htmlselector)) {
     return new List([domify(htmlselector)], htmlselector);
   }
 
   // selector
   var ctx = context
-    ? (context.els ? context.els[0] : context)
+    ? (context instanceof List ? context[0] : context)
     : document;
 
   return new List(query.all(selector, ctx), selector);
 }
 
 /**
- * Expose `List` constructor.
+ * Static: Expose `List`
  */
 
-exports.List = List;
+dom.List = List;
+
+/**
+ * Static: Expose supported attrs.
+ */
+
+dom.attrs = attrs;
+
+/**
+ * Static: Mixin a function
+ *
+ * @param {Object|String} name
+ * @param {Object|Function} obj
+ * @return {List} self
+ */
+
+dom.use = function(name, fn) {
+  var keys = [];
+  var tmp;
+
+  if (2 == arguments.length) {
+    keys.push(name);
+    tmp = {};
+    tmp[name] = fn;
+    fn = tmp;
+  } else if (name.name) {
+    // use function name
+    fn = name;
+    name = name.name;
+    keys.push(name);
+    tmp = {};
+    tmp[name] = fn;
+    fn = tmp;
+  } else {
+    keys = Object.keys(name);
+    fn = name;
+  }
+
+  for(var i = 0, len = keys.length; i < len; i++) {
+    List.prototype[keys[i]] = fn[keys[i]];
+  }
+
+  return this;
+}
 
 /**
  * Initialize a new `List` with the
@@ -110,716 +148,38 @@ exports.List = List;
  */
 
 function List(els, selector) {
-  this.els = els || [];
+  els = els || [];
+  var len = this.length = els.length;
+  for(var i = 0; i < len; i++) this[i] = els[i];
   this.selector = selector;
 }
 
 /**
- * Enumerable iterator.
- */
-
-List.prototype.__iterate__ = function(){
-  var self = this;
-  return {
-    length: function(){ return self.els.length },
-    get: function(i){ return new List([self.els[i]]) }
-  }
-};
-
-/**
- * Remove elements from the DOM.
+ * Remake the list
  *
- * @api public
- */
-
-List.prototype.remove = function(){
-  for (var i = 0; i < this.els.length; i++) {
-    var el = this.els[i];
-    var parent = el.parentNode;
-    if (parent) parent.removeChild(el);
-  }
-};
-
-/**
- * Set attribute `name` to `val`, or get attr `name`.
- *
- * @param {String} name
- * @param {String} [val]
- * @return {String|List} self
- * @api public
- */
-
-List.prototype.attr = function(name, val){
-  // get
-  if (1 == arguments.length) {
-    return this.els[0] && this.els[0].getAttribute(name);
-  }
-
-  // remove
-  if (null == val) {
-    return this.removeAttr(name);
-  }
-
-  // set
-  return this.forEach(function(el){
-    el.setAttribute(name, val);
-  });
-};
-
-/**
- * Remove attribute `name`.
- *
- * @param {String} name
- * @return {List} self
- * @api public
- */
-
-List.prototype.removeAttr = function(name){
-  return this.forEach(function(el){
-    el.removeAttribute(name);
-  });
-};
-
-/**
- * Set property `name` to `val`, or get property `name`.
- *
- * @param {String} name
- * @param {String} [val]
- * @return {Object|List} self
- * @api public
- */
-
-List.prototype.prop = function(name, val){
-  if (1 == arguments.length) {
-    return this.els[0] && this.els[0][name];
-  }
-
-  return this.forEach(function(el){
-    el[name] = val;
-  });
-};
-
-/**
- * Get the first element's value or set selected
- * element values to `val`.
- *
- * @param {Mixed} [val]
- * @return {Mixed}
- * @api public
- */
-
-List.prototype.val =
-List.prototype.value = function(val){
-  if (0 == arguments.length) {
-    return this.els[0]
-      ? value(this.els[0])
-      : undefined;
-  }
-
-  return this.forEach(function(el){
-    value(el, val);
-  });
-};
-
-/**
- * Return a cloned `List` with all elements cloned.
- *
+ * @param {String|ELement|context} context
  * @return {List}
- * @api public
+ * @api private
  */
 
-List.prototype.clone = function(){
-  var arr = [];
-  for (var i = 0, len = this.els.length; i < len; ++i) {
-    arr.push(this.els[i].cloneNode(true));
-  }
-  return new List(arr);
-};
+List.prototype.dom = dom;
 
 /**
- * Prepend `val`.
- *
- * @param {String|Element|List} val
- * @return {List} new list
- * @api public
+ * Make `List` an array-like object
  */
 
-List.prototype.prepend = function(val){
-  var el = this.els[0];
-  if (!el) return this;
-  val = dom(val);
-  for (var i = 0; i < val.els.length; ++i) {
-    if (el.children.length) {
-      el.insertBefore(val.els[i], el.firstChild);
-    } else {
-      el.appendChild(val.els[i]);
-    }
-  }
-  return val;
-};
+List.prototype.length = 0;
+List.prototype.splice = Array.prototype.splice;
 
 /**
- * Append `val`.
+ * Array-like object to array
  *
- * @param {String|Element|List} val
- * @return {List} new list
- * @api public
- */
-
-List.prototype.append = function(val){
-  var el = this.els[0];
-  if (!el) return this;
-  val = dom(val);
-  for (var i = 0; i < val.els.length; ++i) {
-    el.appendChild(val.els[i]);
-  }
-  return val;
-};
-
-/**
- * Append self's `el` to `val`
- *
- * @param {String|Element|List} val
- * @return {List} self
- * @api public
- */
-
-List.prototype.appendTo = function(val){
-  dom(val).append(this);
-  return this;
-};
-
-/**
- * Insert self's `els` after `val`
- *
- * @param {String|Element|List} val
- * @return {List} self
- * @api public
- */
-
-List.prototype.insertAfter = function(val){
-  val = dom(val).els[0];
-  if (!val || !val.parentNode) return this;
-  this.forEach(function(el){
-    val.parentNode.insertBefore(el, val.nextSibling);
-  });
-  return this;
-};
-
-/**
- * Replace elements in the DOM.
- *
- * @param {String|Element|List} val
- * @return {List} new list
- * @api public
- */
-
-List.prototype.replace = function(val){
-  val = dom(val);
-  var el = val.els[0];
-  if (!el) return;
-  for (var i = 0; i < this.els.length; i++) {
-    var old = this.els[i];
-    var parent = old.parentNode;
-    if (parent) parent.replaceChild(el.cloneNode(true), old);
-  }
-  return val;
-};
-
-/**
- * Return a `List` containing the element at `i`.
- *
- * @param {Number} i
- * @return {List}
- * @api public
- */
-
-List.prototype.at = function(i){
-  return new List([this.els[i]], this.selector);
-};
-
-/**
- * Return a `List` containing the first element.
- *
- * @param {Number} i
- * @return {List}
- * @api public
- */
-
-List.prototype.first = function(){
-  return new List([this.els[0]], this.selector);
-};
-
-/**
- * Return a `List` containing the last element.
- *
- * @param {Number} i
- * @return {List}
- * @api public
- */
-
-List.prototype.last = function(){
-  return new List([this.els[this.els.length - 1]], this.selector);
-};
-
-/**
- * Return an `Element` at `i`.
- *
- * @param {Number} i
- * @return {Element}
- * @api public
- */
-
-List.prototype.get = function(i){
-  return this.els[i || 0];
-};
-
-/**
- * Return list length.
- *
- * @return {Number}
- * @api public
- */
-
-List.prototype.length = function(){
-  return this.els.length;
-};
-
-/**
- * Return element text.
- *
- * @param {String} str
- * @return {String|List}
- * @api public
- */
-
-List.prototype.text = function(str){
-  // TODO: real impl
-  if (1 == arguments.length) {
-    this.forEach(function(el){
-      el.textContent = str;
-    });
-    return this;
-  }
-
-  var str = '';
-  for (var i = 0; i < this.els.length; ++i) {
-    str += this.els[i].textContent;
-  }
-  return str;
-};
-
-/**
- * Return element html.
- *
- * @return {String} html
- * @api public
- */
-
-List.prototype.html = function(html){
-  if (1 == arguments.length) {
-    return this.forEach(function(el){
-      el.innerHTML = html;
-    });
-  }
-
-  // TODO: real impl
-  return this.els[0] && this.els[0].innerHTML;
-};
-
-/**
- * Bind to `event` and invoke `fn(e)`. When
- * a `selector` is given then events are delegated.
- *
- * @param {String} event
- * @param {String} [selector]
- * @param {Function} fn
- * @param {Boolean} capture
- * @return {List}
- * @api public
- */
-
-List.prototype.on = function(event, selector, fn, capture){
-  if ('string' == typeof selector) {
-    for (var i = 0; i < this.els.length; ++i) {
-      fn._delegate = delegate.bind(this.els[i], selector, event, fn, capture);
-    }
-    return this;
-  }
-
-  capture = fn;
-  fn = selector;
-
-  for (var i = 0; i < this.els.length; ++i) {
-    events.bind(this.els[i], event, fn, capture);
-  }
-
-  return this;
-};
-
-/**
- * Unbind to `event` and invoke `fn(e)`. When
- * a `selector` is given then delegated event
- * handlers are unbound.
- *
- * @param {String} event
- * @param {String} [selector]
- * @param {Function} fn
- * @param {Boolean} capture
- * @return {List}
- * @api public
- */
-
-List.prototype.off = function(event, selector, fn, capture){
-  if ('string' == typeof selector) {
-    for (var i = 0; i < this.els.length; ++i) {
-      // TODO: add selector support back
-      delegate.unbind(this.els[i], event, fn._delegate, capture);
-    }
-    return this;
-  }
-
-  capture = fn;
-  fn = selector;
-
-  for (var i = 0; i < this.els.length; ++i) {
-    events.unbind(this.els[i], event, fn, capture);
-  }
-  return this;
-};
-
-/**
- * Iterate elements and invoke `fn(list, i)`.
- *
- * @param {Function} fn
- * @return {List} self
- * @api public
- */
-
-List.prototype.each = function(fn){
-  for (var i = 0; i < this.els.length; ++i) {
-    fn(new List([this.els[i]], this.selector), i);
-  }
-  return this;
-};
-
-/**
- * Iterate elements and invoke `fn(el, i)`.
- *
- * @param {Function} fn
- * @return {List} self
- * @api public
- */
-
-List.prototype.forEach = function(fn){
-  for (var i = 0; i < this.els.length; ++i) {
-    fn(this.els[i], i);
-  }
-  return this;
-};
-
-/**
- * Map elements invoking `fn(list, i)`.
- *
- * @param {Function} fn
  * @return {Array}
- * @api public
  */
 
-List.prototype.map = function(fn){
-  var arr = [];
-  for (var i = 0; i < this.els.length; ++i) {
-    arr.push(fn(new List([this.els[i]], this.selector), i));
-  }
-  return arr;
-};
-
-/**
- * Filter elements invoking `fn(list, i)`, returning
- * a new `List` of elements when a truthy value is returned.
- *
- * @param {Function} fn
- * @return {List}
- * @api public
- */
-
-List.prototype.select =
-List.prototype.filter = function(fn){
-  var el;
-  var list = new List([], this.selector);
-  for (var i = 0; i < this.els.length; ++i) {
-    el = this.els[i];
-    if (fn(new List([el], this.selector), i)) list.els.push(el);
-  }
-  return list;
-};
-
-/**
- * Filter elements invoking `fn(list, i)`, returning
- * a new `List` of elements when a falsey value is returned.
- *
- * @param {Function} fn
- * @return {List}
- * @api public
- */
-
-List.prototype.reject = function(fn){
-  var el;
-  var list = new List([], this.selector);
-  for (var i = 0; i < this.els.length; ++i) {
-    el = this.els[i];
-    if (!fn(new List([el], this.selector), i)) list.els.push(el);
-  }
-  return list;
-};
-
-/**
- * Add the given class `name`.
- *
- * @param {String} name
- * @return {List} self
- * @api public
- */
-
-List.prototype.addClass = function(name){
-  var el;
-  for (var i = 0; i < this.els.length; ++i) {
-    el = this.els[i];
-    el._classes = el._classes || classes(el);
-    el._classes.add(name);
-  }
-  return this;
-};
-
-/**
- * Remove the given class `name`.
- *
- * @param {String|RegExp} name
- * @return {List} self
- * @api public
- */
-
-List.prototype.removeClass = function(name){
-  var el;
-
-  if ('regexp' == type(name)) {
-    for (var i = 0; i < this.els.length; ++i) {
-      el = this.els[i];
-      el._classes = el._classes || classes(el);
-      var arr = el._classes.array();
-      for (var j = 0; j < arr.length; j++) {
-        if (name.test(arr[j])) {
-          el._classes.remove(arr[j]);
-        }
-      }
-    }
-    return this;
-  }
-
-  for (var i = 0; i < this.els.length; ++i) {
-    el = this.els[i];
-    el._classes = el._classes || classes(el);
-    el._classes.remove(name);
-  }
-
-  return this;
-};
-
-/**
- * Toggle the given class `name`,
- * optionally a `bool` may be given
- * to indicate that the class should
- * be added when truthy.
- *
- * @param {String} name
- * @param {Boolean} bool
- * @return {List} self
- * @api public
- */
-
-List.prototype.toggleClass = function(name, bool){
-  var el;
-  var fn = 'toggle';
-
-  // toggle with boolean
-  if (2 == arguments.length) {
-    fn = bool ? 'add' : 'remove';
-  }
-
-  for (var i = 0; i < this.els.length; ++i) {
-    el = this.els[i];
-    el._classes = el._classes || classes(el);
-    el._classes[fn](name);
-  }
-
-  return this;
-};
-
-/**
- * Check if the given class `name` is present.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-List.prototype.hasClass = function(name){
-  var el;
-  for (var i = 0; i < this.els.length; ++i) {
-    el = this.els[i];
-    el._classes = el._classes || classes(el);
-    if (el._classes.has(name)) return true;
-  }
-  return false;
-};
-
-/**
- * Set CSS `prop` to `val` or get `prop` value.
- * Also accepts an object (`prop`: `val`)
- *
- * @param {String} prop
- * @param {Mixed} val
- * @return {List|String}
- * @api public
- */
-
-List.prototype.css = function(prop, val){
-  if (2 == arguments.length) {
-    var obj = {};
-    obj[prop] = val;
-    return this.setStyle(obj);
-  }
-
-  if ('object' == type(prop)) {
-    return this.setStyle(prop);
-  }
-
-  return this.getStyle(prop);
-};
-
-/**
- * Set CSS `props`.
- *
- * @param {Object} props
- * @return {List} self
- * @api private
- */
-
-List.prototype.setStyle = function(props){
-  for (var i = 0; i < this.els.length; ++i) {
-    css(this.els[i], props);
-  }
-  return this;
-};
-
-/**
- * Get CSS `prop` value.
- *
- * @param {String} prop
- * @return {String}
- * @api private
- */
-
-List.prototype.getStyle = function(prop){
-  var el = this.els[0];
-  if (el) return el.style[prop];
-};
-
-/**
- * Find children matching the given `selector`.
- *
- * @param {String} selector
- * @return {List}
- * @api public
- */
-
-List.prototype.find = function(selector){
-  return dom(selector, this);
-};
-
-/**
- * Empty the dom list
- *
- * @return self
- * @api public
- */
-
-List.prototype.empty = function(){
-  var elem, el;
-
-  for (var i = 0; i < this.els.length; ++i) {
-    el = this.els[i];
-    while (el.firstChild) {
-      el.removeChild(el.firstChild);
-    }
-  }
-
-  return this;
+List.prototype.toArray = function() {
+  return slice.call(this);
 }
-
-/**
- * Check if the first element matches `selector`.
- *
- * @param {String} selector
- * @return {Boolean}
- * @api public
- */
-
-List.prototype.is = function(selector){
-  return matches(this.get(0), selector);
-};
-
-/**
- * Get parent(s) with optional `selector` and `limit`
- *
- * @param {String} selector
- * @param {Number} limit
- * @return {List}
- * @api public
- */
-
-List.prototype.parent = function(selector, limit){
-  return new List(traverse('parentNode',
-    this.get(0),
-    selector,
-    limit
-    || 1));
-};
-
-/**
- * Get next element(s) with optional `selector` and `limit`.
- *
- * @param {String} selector
- * @param {Number} limit
- * @retrun {List}
- * @api public
- */
-
-List.prototype.next = function(selector, limit){
-  return new List(traverse('nextSibling',
-    this.get(0),
-    selector,
-    limit
-    || 1));
-};
-
-/**
- * Get previous element(s) with optional `selector` and `limit`.
- *
- * @param {String} selector
- * @param {Number} limit
- * @return {List}
- * @api public
- */
-
-List.prototype.prev =
-List.prototype.previous = function(selector, limit){
-  return new List(traverse('previousSibling',
-    this.get(0),
-    selector,
-    limit
-    || 1));
-};
 
 /**
  * Attribute accessors.
@@ -832,3 +192,29 @@ attrs.forEach(function(name){
   };
 });
 
+/**
+ * Mixin the API
+ */
+
+dom.use(require('./lib/attributes'));
+dom.use(require('./lib/classes'));
+dom.use(require('./lib/events'));
+dom.use(require('./lib/manipulate'));
+dom.use(require('./lib/traverse'));
+
+/**
+ * Check if the string is HTML
+ *
+ * @param {String} str
+ * @return {Boolean}
+ * @api private
+ */
+
+function isHTML(str) {
+  // Faster than running regex, if str starts with `<` and ends with `>`, assume it's HTML
+  if (str.charAt(0) === '<' && str.charAt(str.length - 1) === '>' && str.length >= 3) return true;
+
+  // Run the regex
+  var match = quickExpr.exec(str);
+  return !!(match && match[1]);
+}
