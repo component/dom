@@ -276,13 +276,24 @@ dom('.uploads').find('.complete').remove();
 
 ### .each(fn)
 
-  Iterate elements passing each element, and its index.
-  The context `this` is a list containing that element.
+  Iterate elements passing each one as a list, and its index:
 
 ```js
-dom('ul li').each(function(el, i){
-  if (this.hasClass('complete')) {
-    this.remove();
+dom('ul li').each(function(li, i){
+  if (li.hasClass('complete')) {
+    li.remove();
+  }
+});
+```
+
+### .forEach(fn)
+
+  Iterate elements passing each one, and its index:
+
+```js
+dom('ul li').forEach(function(li, i){
+  if (li.className == 'complete') {
+    li.parentNode.removeChild(li);
   }
 });
 ```

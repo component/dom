@@ -319,7 +319,31 @@ describe('.each(fn)', function() {
     var contexts = [];
     var indexes = [];
     var values = [];
-    var ret = list.each(function(el, i) {
+    var ret = list.each(function(item, i) {
+      contexts.push(this);
+      indexes.push(i);
+      values.push(item);
+    });
+
+    assert(ret == list, 'should return self for chaining');
+    assert(0 == indexes[0]);
+    assert(1 == indexes[1]);
+    assert('LI' == values[0][0].nodeName, 'values should be a list');
+    assert(list[0] == values[0][0]);
+    assert(list[1] == values[1][0]);
+    assert(list[0] == contexts[0][0], 'context should be a list');
+    assert(list[1] == contexts[1][0], 'context should be a list');
+  })
+})
+
+describe('.forEach(fn)', function() {
+  it('should iterate passing (el, i)', function() {
+    var list = dom('<ul><li>foo</li><li>bar</li></ul>').find('li');
+
+    var contexts = [];
+    var indexes = [];
+    var values = [];
+    var ret = list.forEach(function(el, i) {
       contexts.push(this);
       indexes.push(i);
       values.push(el);
@@ -328,11 +352,11 @@ describe('.each(fn)', function() {
     assert(ret == list, 'should return self for chaining');
     assert(0 == indexes[0]);
     assert(1 == indexes[1]);
-    assert('LI' == values[0].nodeName, 'values should be elements');
+    assert('LI' == values[0].nodeName, 'values should be an el');
     assert(list[0] == values[0]);
     assert(list[1] == values[1]);
-    assert(list[0] == contexts[0][0], 'context should be a list');
-    assert(list[1] == contexts[1][0], 'context should be a list');
+    assert(list[0] == contexts[0], 'context should be an el');
+    assert(list[1] == contexts[1], 'context should be an el');
   })
 })
 
