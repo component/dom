@@ -1,4 +1,3 @@
-
 # dom
 
   jQuery inspired DOM traversal / manipulation component. Aggregates the
@@ -11,7 +10,7 @@
   - [delegate](http://github.com/component/delegate) for event delegation
   - [event](http://github.com/component/event) for event binding
   - [value](http://github.com/component/value) for form field values
-  - [css](http://github.com/matthewmueller/css) for style properties
+  - [css](http://github.com/component/css) for style properties
 
 ## Installation
 
