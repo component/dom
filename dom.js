@@ -218,6 +218,7 @@ var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
 
 exports.bind = function(el, type, fn, capture){
   el[bind](prefix + type, fn, capture || false);
+
   return fn;
 };
 
@@ -234,6 +235,7 @@ exports.bind = function(el, type, fn, capture){
 
 exports.unbind = function(el, type, fn, capture){
   el[unbind](prefix + type, fn, capture || false);
+
   return fn;
 };
 });
@@ -357,11 +359,8 @@ function parse(html) {
 
 });
 require.register("component-indexof/index.js", function(exports, require, module){
-
-var indexOf = [].indexOf;
-
 module.exports = function(arr, obj){
-  if (indexOf) return arr.indexOf(obj);
+  if (arr.indexOf) return arr.indexOf(obj);
   for (var i = 0; i < arr.length; ++i) {
     if (arr[i] === obj) return i;
   }
@@ -536,6 +535,154 @@ ClassList.prototype.contains = function(name){
 };
 
 });
+require.register("visionmedia-debug/index.js", function(exports, require, module){
+if ('undefined' == typeof window) {
+  module.exports = require('./lib/debug');
+} else {
+  module.exports = require('./debug');
+}
+
+});
+require.register("visionmedia-debug/debug.js", function(exports, require, module){
+
+/**
+ * Expose `debug()` as the module.
+ */
+
+module.exports = debug;
+
+/**
+ * Create a debugger with the given `name`.
+ *
+ * @param {String} name
+ * @return {Type}
+ * @api public
+ */
+
+function debug(name) {
+  if (!debug.enabled(name)) return function(){};
+
+  return function(fmt){
+    fmt = coerce(fmt);
+
+    var curr = new Date;
+    var ms = curr - (debug[name] || curr);
+    debug[name] = curr;
+
+    fmt = name
+      + ' '
+      + fmt
+      + ' +' + debug.humanize(ms);
+
+    // This hackery is required for IE8
+    // where `console.log` doesn't have 'apply'
+    window.console
+      && console.log
+      && Function.prototype.apply.call(console.log, console, arguments);
+  }
+}
+
+/**
+ * The currently active debug mode names.
+ */
+
+debug.names = [];
+debug.skips = [];
+
+/**
+ * Enables a debug mode by name. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} name
+ * @api public
+ */
+
+debug.enable = function(name) {
+  try {
+    localStorage.debug = name;
+  } catch(e){}
+
+  var split = (name || '').split(/[\s,]+/)
+    , len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    name = split[i].replace('*', '.*?');
+    if (name[0] === '-') {
+      debug.skips.push(new RegExp('^' + name.substr(1) + '$'));
+    }
+    else {
+      debug.names.push(new RegExp('^' + name + '$'));
+    }
+  }
+};
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+debug.disable = function(){
+  debug.enable('');
+};
+
+/**
+ * Humanize the given `ms`.
+ *
+ * @param {Number} m
+ * @return {String}
+ * @api private
+ */
+
+debug.humanize = function(ms) {
+  var sec = 1000
+    , min = 60 * 1000
+    , hour = 60 * min;
+
+  if (ms >= hour) return (ms / hour).toFixed(1) + 'h';
+  if (ms >= min) return (ms / min).toFixed(1) + 'm';
+  if (ms >= sec) return (ms / sec | 0) + 's';
+  return ms + 'ms';
+};
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+debug.enabled = function(name) {
+  for (var i = 0, len = debug.skips.length; i < len; i++) {
+    if (debug.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (var i = 0, len = debug.names.length; i < len; i++) {
+    if (debug.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+};
+
+/**
+ * Coerce `val`.
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+// persist
+
+try {
+  if (window.localStorage) debug.enable(localStorage.debug);
+} catch(e){}
+
+});
 require.register("ianstormtaylor-to-no-case/index.js", function(exports, require, module){
 
 /**
@@ -682,11 +829,12 @@ module.exports = function(el) {
   return false;
 };
 });
-require.register("matthewmueller-css/index.js", function(exports, require, module){
+require.register("component-css/index.js", function(exports, require, module){
 /**
  * Module Dependencies
  */
 
+var debug = require('debug')('css');
 var set = require('./lib/style');
 var get = require('./lib/css');
 
@@ -702,6 +850,7 @@ module.exports = css;
  * @param {Element} el
  * @param {String|Object} prop
  * @param {Mixed} val
+ * @return {Element} el
  * @api public
  */
 
@@ -711,13 +860,16 @@ function css(el, prop, val) {
   if (undefined !== val) {
     var obj = {};
     obj[prop] = val;
+    debug('setting styles %j', obj);
     return setStyles(el, obj);
   }
 
   if ('object' == typeof prop) {
+    debug('setting styles %j', prop);
     return setStyles(el, prop);
   }
 
+  debug('getting %s', prop);
   return get(el, prop);
 }
 
@@ -726,20 +878,24 @@ function css(el, prop, val) {
  *
  * @param {Element} el
  * @param {Object} props
+ * @return {Element} el
  */
 
 function setStyles(el, props) {
   for (var prop in props) {
     set(el, prop, props[prop]);
   }
+
+  return el;
 }
 
 });
-require.register("matthewmueller-css/lib/css.js", function(exports, require, module){
+require.register("component-css/lib/css.js", function(exports, require, module){
 /**
  * Module Dependencies
  */
 
+var debug = require('debug')('css:css');
 var camelcase = require('to-camel-case');
 var computed = require('./computed');
 var property = require('./prop');
@@ -780,20 +936,24 @@ function css(el, prop, extra, styles) {
 
   // If a hook was provided get the computed value from there
   if (hook && hook.get) {
+    debug('get hook provided. use that');
     val = hook.get(el, true, extra);
   }
 
   // Otherwise, if a way to get the computed value exists, use that
   if (undefined == val) {
+    debug('fetch the computed value of %s', prop);
     val = computed(el, prop);
   }
 
   if ('normal' == val && cssNormalTransform[prop]) {
     val = cssNormalTransform[prop];
+    debug('normal => %s', val);
   }
 
   // Return, converting to number if forced or a qualifier was provided and val looks numeric
   if ('' == extra || extra) {
+    debug('converting value: %s into a number');
     var num = parseFloat(val);
     return true === extra || isNumeric(num) ? num || 0 : val;
   }
@@ -813,11 +973,12 @@ function isNumeric(obj) {
 }
 
 });
-require.register("matthewmueller-css/lib/prop.js", function(exports, require, module){
+require.register("component-css/lib/prop.js", function(exports, require, module){
 /**
  * Module dependencies
  */
 
+var debug = require('debug')('css:prop');
 var camelcase = require('to-camel-case');
 var vendor = require('./vendor');
 
@@ -845,11 +1006,13 @@ var cssProps = {
  */
 
 function prop(prop, style) {
-  return cssProps[prop] || (cssProps[prop] = vendor(prop, style));
+  prop = cssProps[prop] || (cssProps[prop] = vendor(prop, style));
+  debug('transform property: %s => %s');
+  return prop;
 }
 
 });
-require.register("matthewmueller-css/lib/swap.js", function(exports, require, module){
+require.register("component-css/lib/swap.js", function(exports, require, module){
 /**
  * Export `swap`
  */
@@ -884,11 +1047,12 @@ function swap(el, options, fn, args) {
 }
 
 });
-require.register("matthewmueller-css/lib/style.js", function(exports, require, module){
+require.register("component-css/lib/style.js", function(exports, require, module){
 /**
  * Module Dependencies
  */
 
+var debug = require('debug')('css:style');
 var camelcase = require('to-camel-case');
 var support = require('./support');
 var property = require('./prop');
@@ -943,11 +1107,15 @@ function style(el, prop, val, extra) {
   var hook = hooks[prop] || hooks[orig];
 
   // If a number was passed in, add 'px' to the (except for certain CSS properties)
-  if ('number' == type && !cssNumber[orig]) val += 'px';
+  if ('number' == type && !cssNumber[orig]) {
+    debug('adding "px" to end of number');
+    val += 'px';
+  }
 
   // Fixes jQuery #8908, it can be done more correctly by specifying setters in cssHooks,
   // but it would mean to define eight (for every problematic property) identical functions
   if (!support.clearCloneStyle && '' === val && 0 === prop.indexOf('background')) {
+    debug('set property (%s) value to "inherit"', prop);
     style[prop] = 'inherit';
   }
 
@@ -955,6 +1123,7 @@ function style(el, prop, val, extra) {
   if (!hook || !hook.set || undefined !== (val = hook.set(el, val, extra))) {
     // Support: Chrome, Safari
     // Setting style to blank string required to delete "style: x !important;"
+    debug('set hook defined. setting property (%s) to %s', prop, val);
     style[prop] = '';
     style[prop] = val;
   }
@@ -977,14 +1146,17 @@ function get(el, prop, orig, extra) {
   var ret;
 
   if (hook && hook.get && undefined !== (ret = hook.get(el, false, extra))) {
+    debug('get hook defined, returning: %s', ret);
     return ret;
   }
 
-  return style[prop];
+  ret = style[prop];
+  debug('getting %s', ret);
+  return ret;
 }
 
 });
-require.register("matthewmueller-css/lib/hooks.js", function(exports, require, module){
+require.register("component-css/lib/hooks.js", function(exports, require, module){
 /**
  * Module Dependencies
  */
@@ -1148,7 +1320,7 @@ function augmentWidthOrHeight(el, prop, extra, isBorderBox, styles) {
 }
 
 });
-require.register("matthewmueller-css/lib/styles.js", function(exports, require, module){
+require.register("component-css/lib/styles.js", function(exports, require, module){
 /**
  * Expose `styles`
  */
@@ -1167,7 +1339,7 @@ function styles(el) {
 }
 
 });
-require.register("matthewmueller-css/lib/vendor.js", function(exports, require, module){
+require.register("component-css/lib/vendor.js", function(exports, require, module){
 /**
  * Module Dependencies
  */
@@ -1206,7 +1378,7 @@ function vendor(prop, style) {
 }
 
 });
-require.register("matthewmueller-css/lib/support.js", function(exports, require, module){
+require.register("component-css/lib/support.js", function(exports, require, module){
 /**
  * Support values
  */
@@ -1310,11 +1482,12 @@ function computePixelPositionAndBoxSizingReliable() {
 
 
 });
-require.register("matthewmueller-css/lib/computed.js", function(exports, require, module){
+require.register("component-css/lib/computed.js", function(exports, require, module){
 /**
  * Module Dependencies
  */
 
+var debug = require('debug')('css:computed');
 var withinDocument = require('within-document');
 var styles = require('./styles');
 
@@ -1329,21 +1502,24 @@ module.exports = computed;
  *
  * @param {Element} el
  * @param {String} prop
- * @param {Array} computed (optional)
+ * @param {Array} precomputed (optional)
  * @return {Array}
  * @api private
  */
 
-function computed(el, prop, computed) {
-  computed = computed || styles(el);
+function computed(el, prop, precomputed) {
+  computed = precomputed || styles(el);
   if (!computed) return;
 
-  var style = require('./style');
   var ret = computed.getPropertyValue(prop) || computed[prop];
 
   if ('' === ret && !withinDocument(el)) {
+    debug('element not within document, try finding from style attribute');
+    var style = require('./style');
     ret = style(el, prop);
   }
+
+  debug('computed value of %s: %s', prop, ret);
 
   // Support: IE
   // IE returns zIndex value as an integer.
@@ -1352,7 +1528,6 @@ function computed(el, prop, computed) {
 
 });
 require.register("component-type/index.js", function(exports, require, module){
-
 /**
  * toString ref.
  */
@@ -1369,20 +1544,17 @@ var toString = Object.prototype.toString;
 
 module.exports = function(val){
   switch (toString.call(val)) {
-    case '[object Function]': return 'function';
     case '[object Date]': return 'date';
     case '[object RegExp]': return 'regexp';
     case '[object Arguments]': return 'arguments';
     case '[object Array]': return 'array';
-    case '[object String]': return 'string';
   }
 
   if (val === null) return 'null';
   if (val === undefined) return 'undefined';
   if (val && val.nodeType === 1) return 'element';
-  if (val === Object(val)) return 'object';
 
-  return typeof val;
+  return typeof val.valueOf();
 };
 
 });
@@ -1973,6 +2145,43 @@ dom.List = List;
 dom.attrs = attrs;
 
 /**
+ * Static: Mixin a function
+ *
+ * @param {Object|String} name
+ * @param {Object|Function} obj
+ * @return {List} self
+ */
+
+dom.use = function(name, fn) {
+  var keys = [];
+  var tmp;
+
+  if (2 == arguments.length) {
+    keys.push(name);
+    tmp = {};
+    tmp[name] = fn;
+    fn = tmp;
+  } else if (name.name) {
+    // use function name
+    fn = name;
+    name = name.name;
+    keys.push(name);
+    tmp = {};
+    tmp[name] = fn;
+    fn = tmp;
+  } else {
+    keys = Object.keys(name);
+    fn = name;
+  }
+
+  for(var i = 0, len = keys.length; i < len; i++) {
+    List.prototype[keys[i]] = fn[keys[i]];
+  }
+
+  return this;
+}
+
+/**
  * Initialize a new `List` with the
  * given array-ish of `els` and `selector`
  * string.
@@ -2017,23 +2226,6 @@ List.prototype.toArray = function() {
 }
 
 /**
- * Static: Mixin a function
- *
- * @param {Object|Function} obj
- * @return {List} self
- */
-
-List.use = function(fn) {
-  var keys = ('function' == typeof fn) ? [fn] : Object.keys(fn);
-
-  for(var i = 0, len = keys.length; i < len; i++) {
-    List.prototype[keys[i]] = fn[keys[i]];
-  }
-
-  return this;
-}
-
-/**
  * Attribute accessors.
  */
 
@@ -2048,11 +2240,11 @@ attrs.forEach(function(name){
  * Mixin the API
  */
 
-List.use(require('./lib/attributes'));
-List.use(require('./lib/classes'));
-List.use(require('./lib/events'));
-List.use(require('./lib/manipulate'));
-List.use(require('./lib/traverse'));
+dom.use(require('./lib/attributes'));
+dom.use(require('./lib/classes'));
+dom.use(require('./lib/events'));
+dom.use(require('./lib/manipulate'));
+dom.use(require('./lib/traverse'));
 
 /**
  * Check if the string is HTML
@@ -2164,19 +2356,36 @@ exports.previous = function(selector, limit){
 };
 
 /**
- * Iterate each value and invoke `fn(val, i)`.
+ * Iterate over each element creating a new list with
+ * one item and invoking `fn(list, i)`.
  *
  * @param {Function} fn
  * @return {List} self
  * @api public
  */
 
-exports.forEach =
 exports.each = function(fn){
   var dom = this.dom;
 
+  for (var i = 0, list, len = this.length; i < len; i++) {
+    list = dom(this[i]);
+    fn.call(list, list, i);
+  }
+
+  return this;
+};
+
+/**
+ * Iterate over each element and invoke `fn(el, i)`
+ *
+ * @param {Function} fn
+ * @return {List} self
+ * @api public
+ */
+
+exports.forEach = function(fn) {
   for (var i = 0, len = this.length; i < len; i++) {
-    fn.call(dom(this[i]), this[i], i);
+    fn.call(this[i], this[i], i);
   }
 
   return this;
@@ -2365,14 +2574,15 @@ var css = require('css');
 
 exports.text = function(str) {
   if (1 == arguments.length) {
-    return this.each(function(el) {
+    return this.forEach(function(el) {
       var node = document.createTextNode(str);
-      this.empty().append(node);
+      el.textContent = '';
+      el.appendChild(node);
     });
   }
 
   var out = '';
-  this.each(function(el) {
+  this.forEach(function(el) {
     out += getText(el);
   });
 
@@ -2421,7 +2631,7 @@ function getText(el) {
 
 exports.html = function(html) {
   if (1 == arguments.length) {
-    return this.each(function(el) {
+    return this.forEach(function(el) {
       el.innerHTML = html;
     });
   }
@@ -2445,7 +2655,7 @@ exports.css = function(prop, val) {
     return css(this[0], prop);
   }
   // setter
-  this.each(function(el) {
+  this.forEach(function(el) {
     css(el, prop, val);
   });
 
@@ -2467,8 +2677,8 @@ exports.css = function(prop, val) {
 exports.prepend = function(val) {
   var dom = this.dom;
 
-  this.each(function(target, i) {
-    dom(val).each(function(selector) {
+  this.forEach(function(target, i) {
+    dom(val).forEach(function(selector) {
       selector = i ? selector.cloneNode(true) : selector;
       if (target.children.length) {
         target.insertBefore(selector, target.firstChild);
@@ -2496,8 +2706,8 @@ exports.prepend = function(val) {
 exports.append = function(val) {
   var dom = this.dom;
 
-  this.each(function(target, i) {
-    dom(val).each(function(el) {
+  this.forEach(function(target, i) {
+    dom(val).forEach(function(el) {
       el = i ? el.cloneNode(true) : el;
       target.appendChild(el);
     });
@@ -2522,8 +2732,8 @@ exports.append = function(val) {
 exports.insertAfter = function(val) {
   var dom = this.dom;
 
-  this.each(function(el) {
-    dom(val).each(function(target, i) {
+  this.forEach(function(el) {
+    dom(val).forEach(function(target, i) {
       if (!target.parentNode) return;
       el = i ? el.cloneNode(true) : el;
       target.parentNode.insertBefore(el, target.nextSibling);
@@ -2558,7 +2768,7 @@ exports.replace = function(val) {
   var self = this;
   var list = this.dom(val);
 
-  list.each(function(el, i) {
+  list.forEach(function(el, i) {
     var old = self[i];
     var parent = old.parentNode;
     if (!parent) return;
@@ -2577,7 +2787,7 @@ exports.replace = function(val) {
  */
 
 exports.empty = function() {
-  return this.each(function(el) {
+  return this.forEach(function(el) {
     el.textContent = '';
   });
 };
@@ -2590,7 +2800,7 @@ exports.empty = function() {
  */
 
 exports.remove = function() {
-  return this.each(function(el) {
+  return this.forEach(function(el) {
     var parent = el.parentNode;
     if (parent) parent.removeChild(el);
   });
@@ -2628,7 +2838,7 @@ var classes = require('classes');
  */
 
 exports.addClass = function(name){
-  return this.each(function(el) {
+  return this.forEach(function(el) {
     el._classes = el._classes || classes(el);
     el._classes.add(name);
   });
@@ -2643,7 +2853,7 @@ exports.addClass = function(name){
  */
 
 exports.removeClass = function(name){
-  return this.each(function(el) {
+  return this.forEach(function(el) {
     el._classes = el._classes || classes(el);
     el._classes.remove(name);
   });
@@ -2669,7 +2879,7 @@ exports.toggleClass = function(name, bool){
     fn = bool ? 'add' : 'remove';
   }
 
-  return this.each(function(el) {
+  return this.forEach(function(el) {
     el._classes = el._classes || classes(el);
     el._classes[fn](name);
   })
@@ -2724,7 +2934,7 @@ exports.attr = function(name, val){
   }
 
   // set
-  return this.each(function(el){
+  return this.forEach(function(el){
     el.setAttribute(name, val);
   });
 };
@@ -2738,7 +2948,7 @@ exports.attr = function(name, val){
  */
 
 exports.removeAttr = function(name){
-  return this.each(function(el){
+  return this.forEach(function(el){
     el.removeAttribute(name);
   });
 };
@@ -2757,7 +2967,7 @@ exports.prop = function(name, val){
     return this[0] && this[0][name];
   }
 
-  return this.each(function(el){
+  return this.forEach(function(el){
     el[name] = val;
   });
 };
@@ -2779,7 +2989,7 @@ exports.value = function(val){
       : undefined;
   }
 
-  return this.each(function(el){
+  return this.forEach(function(el){
     value(el, val);
   });
 };
@@ -2790,7 +3000,7 @@ require.register("dom/lib/events.js", function(exports, require, module){
  * Module Dependencies
  */
 
-var event = require('event');
+var events = require('event');
 var delegate = require('delegate');
 
 /**
@@ -2807,20 +3017,17 @@ var delegate = require('delegate');
 
 exports.on = function(event, selector, fn, capture){
   if ('string' == typeof selector) {
-    for (var i = 0; i < this.els.length; ++i) {
-      fn._delegate = delegate.bind(this.els[i], selector, event, fn, capture);
-    }
-    return this;
+    return this.forEach(function (el) {
+      fn._delegate = delegate.bind(el, selector, event, fn, capture);
+    });
   }
 
   capture = fn;
   fn = selector;
 
-  for (var i = 0; i < this.els.length; ++i) {
-    events.bind(this.els[i], event, fn, capture);
-  }
-
-  return this;
+  return this.forEach(function (el) {
+    events.bind(el, event, fn, capture);
+  });
 };
 
 /**
@@ -2838,23 +3045,23 @@ exports.on = function(event, selector, fn, capture){
 
 exports.off = function(event, selector, fn, capture){
   if ('string' == typeof selector) {
-    for (var i = 0; i < this.els.length; ++i) {
+    return this.forEach(function (el) {
       // TODO: add selector support back
-      delegate.unbind(this.els[i], event, fn._delegate, capture);
-    }
-    return this;
+      delegate.unbind(el, event, fn._delegate, capture);
+    });
   }
 
   capture = fn;
   fn = selector;
 
-  for (var i = 0; i < this.els.length; ++i) {
-    events.unbind(this.els[i], event, fn, capture);
-  }
-  return this;
+  return this.forEach(function (el) {
+    events.unbind(el, event, fn, capture);
+  });
 };
 
 });
+
+
 
 
 
@@ -2898,25 +3105,28 @@ require.alias("component-classes/index.js", "dom/deps/classes/index.js");
 require.alias("component-classes/index.js", "classes/index.js");
 require.alias("component-indexof/index.js", "component-classes/deps/indexof/index.js");
 
-require.alias("matthewmueller-css/index.js", "dom/deps/css/index.js");
-require.alias("matthewmueller-css/lib/css.js", "dom/deps/css/lib/css.js");
-require.alias("matthewmueller-css/lib/prop.js", "dom/deps/css/lib/prop.js");
-require.alias("matthewmueller-css/lib/swap.js", "dom/deps/css/lib/swap.js");
-require.alias("matthewmueller-css/lib/style.js", "dom/deps/css/lib/style.js");
-require.alias("matthewmueller-css/lib/hooks.js", "dom/deps/css/lib/hooks.js");
-require.alias("matthewmueller-css/lib/styles.js", "dom/deps/css/lib/styles.js");
-require.alias("matthewmueller-css/lib/vendor.js", "dom/deps/css/lib/vendor.js");
-require.alias("matthewmueller-css/lib/support.js", "dom/deps/css/lib/support.js");
-require.alias("matthewmueller-css/lib/computed.js", "dom/deps/css/lib/computed.js");
-require.alias("matthewmueller-css/index.js", "dom/deps/css/index.js");
-require.alias("matthewmueller-css/index.js", "css/index.js");
-require.alias("ianstormtaylor-to-camel-case/index.js", "matthewmueller-css/deps/to-camel-case/index.js");
+require.alias("component-css/index.js", "dom/deps/css/index.js");
+require.alias("component-css/lib/css.js", "dom/deps/css/lib/css.js");
+require.alias("component-css/lib/prop.js", "dom/deps/css/lib/prop.js");
+require.alias("component-css/lib/swap.js", "dom/deps/css/lib/swap.js");
+require.alias("component-css/lib/style.js", "dom/deps/css/lib/style.js");
+require.alias("component-css/lib/hooks.js", "dom/deps/css/lib/hooks.js");
+require.alias("component-css/lib/styles.js", "dom/deps/css/lib/styles.js");
+require.alias("component-css/lib/vendor.js", "dom/deps/css/lib/vendor.js");
+require.alias("component-css/lib/support.js", "dom/deps/css/lib/support.js");
+require.alias("component-css/lib/computed.js", "dom/deps/css/lib/computed.js");
+require.alias("component-css/index.js", "dom/deps/css/index.js");
+require.alias("component-css/index.js", "css/index.js");
+require.alias("visionmedia-debug/index.js", "component-css/deps/debug/index.js");
+require.alias("visionmedia-debug/debug.js", "component-css/deps/debug/debug.js");
+
+require.alias("ianstormtaylor-to-camel-case/index.js", "component-css/deps/to-camel-case/index.js");
 require.alias("ianstormtaylor-to-space-case/index.js", "ianstormtaylor-to-camel-case/deps/to-space-case/index.js");
 require.alias("ianstormtaylor-to-no-case/index.js", "ianstormtaylor-to-space-case/deps/to-no-case/index.js");
 
-require.alias("component-within-document/index.js", "matthewmueller-css/deps/within-document/index.js");
+require.alias("component-within-document/index.js", "component-css/deps/within-document/index.js");
 
-require.alias("matthewmueller-css/index.js", "matthewmueller-css/index.js");
+require.alias("component-css/index.js", "component-css/index.js");
 require.alias("component-value/index.js", "dom/deps/value/index.js");
 require.alias("component-value/index.js", "dom/deps/value/index.js");
 require.alias("component-value/index.js", "value/index.js");
