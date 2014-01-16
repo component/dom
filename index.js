@@ -4,6 +4,7 @@
 
 var isArray = require('isArray');
 var domify = require('domify');
+var each = require('each');
 var events = require('event');
 var query = require('query');
 var trim = require('trim');
@@ -185,7 +186,7 @@ List.prototype.toArray = function() {
  * Attribute accessors.
  */
 
-attrs.forEach(function(name){
+each(attrs, function(name){
   List.prototype[name] = function(val){
     if (0 == arguments.length) return this.attr(name);
     return this.attr(name, val);

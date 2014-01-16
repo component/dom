@@ -5,6 +5,7 @@
 var assert = require('assert');
 var domify = require('domify');
 var dom = require('dom');
+var each = require('each');
 
 /**
  * Tests
@@ -596,7 +597,7 @@ describe('.prev()', function() {
   })
 })
 
-dom.attrs.forEach(function(name) {
+each(dom.attrs, function(name) {
   describe('.' + name + '()', function() {
     it('should return the attribute value', function() {
       var list = dom('<a></a>');

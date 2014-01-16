@@ -17,6 +17,7 @@
     "lib/events.js"
   ],
   "dependencies": {
+    "component/each": "0.1.0",
     "component/event": "0.1.2",
     "component/delegate": "0.1.0",
     "component/domify": "1.0.0",
