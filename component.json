@@ -22,7 +22,7 @@
     "component/delegate": "0.1.0",
     "component/domify": "1.0.0",
     "component/classes": "1.1.2",
-    "dominicbarnes/css": "ie8_compat",
+    "component/css": "*",
     "component/value": "1.1.0",
     "component/query": "0.0.1",
     "component/matches-selector": "0.1.1",
