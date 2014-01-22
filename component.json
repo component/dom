@@ -22,7 +22,7 @@
     "component/delegate": "0.1.0",
     "component/domify": "1.0.0",
     "component/classes": "1.1.2",
-    "component/css": "*",
+    "component/css": "0.0.4",
     "component/value": "1.1.0",
     "component/query": "0.0.1",
     "component/matches-selector": "0.1.1",
