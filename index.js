@@ -4,7 +4,9 @@
 
 var isArray = require('isArray');
 var domify = require('domify');
+var each = require('each');
 var events = require('event');
+var getKeys = require('keys');
 var query = require('query');
 var trim = require('trim');
 var slice = [].slice;
@@ -126,7 +128,7 @@ dom.use = function(name, fn) {
     tmp[name] = fn;
     fn = tmp;
   } else {
-    keys = Object.keys(name);
+    keys = getKeys(name);
     fn = name;
   }
 
@@ -185,7 +187,7 @@ List.prototype.toArray = function() {
  * Attribute accessors.
  */
 
-attrs.forEach(function(name){
+each(attrs, function(name){
   List.prototype[name] = function(val){
     if (0 == arguments.length) return this.attr(name);
     return this.attr(name, val);

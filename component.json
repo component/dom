@@ -17,18 +17,21 @@
     "lib/events.js"
   ],
   "dependencies": {
+    "component/each": "0.1.0",
     "component/event": "0.1.2",
     "component/delegate": "0.1.0",
     "component/domify": "1.0.0",
     "component/classes": "1.1.2",
-    "component/css": "0.0.3",
+    "component/css": "*",
     "component/value": "1.1.0",
     "component/query": "0.0.1",
     "component/matches-selector": "0.1.1",
     "yields/traverse": "0.1.1",
     "component/trim": "0.0.1",
     "yields/isArray": "1.0.0",
-    "component/to-function": "getter/fns"
+    "component/to-function": "getter/fns",
+    "matthewp/keys": "0.0.2",
+    "matthewp/text": "0.0.2"
   },
   "development": {
     "component/assert": "*"
