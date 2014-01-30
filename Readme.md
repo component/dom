@@ -412,6 +412,10 @@ dom('ul li').last().remove();
 
   Return a cloned list of cloned nodes.
 
+### .focus()
+
+  Set focus on the element.
+
 ## .use([name], fn|obj)
 
 Similar to jQuery, you can extend dom to support plugins:

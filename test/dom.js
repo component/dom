@@ -603,6 +603,17 @@ describe('.prev()', function() {
   })
 })
 
+describe('.focus()', function() {
+  it('should set focus to the first element in the list', function() {
+    var input = dom('<input type="text">')
+      .appendTo(document.body)
+      .focus();
+    
+    assert(input[0] == document.activeElement);
+    input.remove();
+  })
+})
+
 each(dom.attrs, function(name) {
   if (name === "style") return;
 
