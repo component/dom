@@ -453,6 +453,11 @@ dom.use(obj);
 
   This library is _not_ aiming for feature parity with jQuery.
 
+## Test
+
+    npm install component-test
+    make test
+
 ## License
 
   MIT
