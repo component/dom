@@ -29,7 +29,7 @@
     "yields/traverse": "0.1.1",
     "component/trim": "0.0.1",
     "yields/isArray": "1.0.0",
-    "component/to-function": "1.2.0",
+    "component/to-function": "1.2.1",
     "matthewp/keys": "0.0.2",
     "matthewp/text": "0.0.2"
   },
