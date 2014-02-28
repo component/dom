@@ -19,7 +19,7 @@
   "dependencies": {
     "component/each": "0.2.2",
     "component/event": "0.1.2",
-    "component/delegate": "0.1.0",
+    "component/delegate": "0.2.1",
     "component/domify": "1.0.0",
     "component/classes": "1.1.2",
     "component/css": "0.0.4",
