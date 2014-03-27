@@ -1,6 +1,6 @@
 {
   "name": "dom",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "DOM traversal, manipulation and events aggregate library",
   "keywords": [
     "html",
