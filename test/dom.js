@@ -37,9 +37,9 @@ describe('dom()', function() {
       assert('Hello' == text(list[0]));
     })
 
-    it('should not clean the right', function() {
+    it('should clean from the right', function() {
       var list = dom('  <em>Hello ');
-      assert('Hello ' == text(list[0]));
+      assert('Hello' == text(list[0]));
     })
   })
 
@@ -608,7 +608,7 @@ describe('.focus()', function() {
     var input = dom('<input type="text">')
       .appendTo(document.body)
       .focus();
-    
+
     assert(input[0] == document.activeElement);
     input.remove();
   })
