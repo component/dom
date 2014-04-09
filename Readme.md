@@ -285,18 +285,6 @@ dom('ul li').each(function(li, i){
 });
 ```
 
-### .forEach(fn)
-
-  Iterate elements passing each one, and its index:
-
-```js
-dom('ul li').forEach(function(li, i){
-  if (li.className == 'complete') {
-    li.parentNode.removeChild(li);
-  }
-});
-```
-
 ### .empty()
 
   Empties the elements.
