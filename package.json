@@ -1,6 +1,6 @@
 {
   "name": "component-dom",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "DOM traversal, manipulation and events aggregate library",
   "license": "MIT",
   "testling": {

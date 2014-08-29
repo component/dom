@@ -1,3 +1,9 @@
+1.0.6 / 2014-08-29
+==================
+
+ * update multiple deps [#81](https://github.com/component/dom/pull/81)
+ * fix undefined dom in .react [#74](https://github.com/component/dom/pull/74)
+
 
 1.0.5 / 2014-03-27
 ==================
