@@ -2,6 +2,12 @@
   "name": "component-dom",
   "version": "1.0.6",
   "description": "DOM traversal, manipulation and events aggregate library",
+  "keywords": [
+    "html",
+    "dom",
+    "ui",
+    "jquery"
+  ],
   "license": "MIT",
   "testling": {
     "harness": "mocha",
