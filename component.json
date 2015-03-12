@@ -28,7 +28,6 @@
     "component/matches-selector": "0.1.4",
     "yields/traverse": "0.1.1",
     "component/trim": "0.0.1",
-    "yields/isArray": "1.0.0",
     "component/to-function": "2.0.5",
     "matthewp/keys": "0.0.3",
     "matthewp/text": "0.0.2"

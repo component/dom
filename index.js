@@ -2,7 +2,6 @@
  * Module dependencies.
  */
 
-var isArray = require('isArray');
 var domify = require('domify');
 var each = require('each');
 var events = require('event');
@@ -10,6 +9,10 @@ var getKeys = require('keys');
 var query = require('query');
 var trim = require('trim');
 var slice = [].slice;
+
+var isArray = Array.isArray || function (val) {
+  return !! val && '[object Array]' === Object.prototype.toString.call(val);
+};
 
 /**
  * Attributes supported.
