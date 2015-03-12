@@ -20,7 +20,7 @@
     "component/each": "0.2.5",
     "component/event": "0.1.4",
     "component/delegate": "0.2.3",
-    "component/domify": "1.3.1",
+    "component/domify": "1.3.2",
     "component/classes": "1.2.1",
     "component/css": "0.0.6",
     "component/value": "1.1.0",
