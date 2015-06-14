@@ -1,6 +1,6 @@
 {
   "name": "component-dom",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "DOM traversal, manipulation and events aggregate library",
   "keywords": [
     "html",
